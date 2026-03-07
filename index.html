@@ -1492,7 +1492,6 @@ const color = colorMap[status] || ‘var(–muted)’;
 const label = labelMap[status] || status;
 const isOpen = status===‘playing’||status===‘reading’||status===‘upcoming’;
 
-```
 if (type === 'movie' && status === 'upcoming') {
   // Sub-group by year
   const byYear = {};
@@ -1514,7 +1513,6 @@ if (type === 'movie' && status === 'upcoming') {
   items.forEach(item => { html += buildItemHtml(item); });
   el.appendChild(makeCollapse(`media-${type}-${status}`, label, color, items.length, html, isOpen));
 }
-```
 
 });
 }
@@ -1677,7 +1675,6 @@ try {
 const tv = localStorage.getItem(STORAGE_KEYS.tvData);
 if (tv) { const d=JSON.parse(tv); tvData.length=0; d.forEach(x=>tvData.push(x)); }
 
-```
 const bk = localStorage.getItem(STORAGE_KEYS.bookData);
 if (bk) { const d=JSON.parse(bk); bookData.length=0; d.forEach(x=>bookData.push(x)); }
 
@@ -1695,7 +1692,6 @@ if (td) { const d=JSON.parse(td); todos.length=0; d.forEach(x=>todos.push(x)); }
 
 const uc = localStorage.getItem(STORAGE_KEYS.userCal);
 if (uc) _userCalData = JSON.parse(uc);
-```
 
 } catch(e) { console.warn(‘Load failed:’, e); }
 }
