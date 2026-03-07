@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>R&K Dashboard</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="R&K">
+<meta name="theme-color" content="#0f0f13">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230f0f13'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='58'%3E%F0%9F%93%8B%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f13;
+  --surface: #17171e;
+  --surface2: #1e1e28;
+  --border: #2a2a38;
+  --accent: #e8b86d;
+  --accent2: #7b9cff;
+  --accent3: #6ddbb8;
+  --accent4: #ff7b7b;
+  --text: #e8e8f0;
+  --muted: #7a7a90;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; min-height: 100vh; padding: 20px 24px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+.dashboard { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; }
+header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.site-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+.site-title span { color: var(--accent); }
+.date-display { font-weight: 300; color: var(--muted); font-size: 13px; letter-spacing: 0.04em; }
+.tabs { display: inline-flex; gap: 4px; margin-bottom: 20px; background: var(--surface); padding: 4px; border-radius: 12px; }
+.tab-btn { font-family: var(--font-head); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+.tab-btn.active { background: var(--surface2); color: var(--text); box-shadow: 0 1px 8px rgba(0,0,0,0.4); }
+.tab-btn:hover:not(.active) { color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.card-title { font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.card-title .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.todo-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-family: var(--font-body); font-size: 13px; outline: none; transition: border-color 0.2s; width: 100%; }
+.todo-input:focus { border-color: var(--accent); }
+.todo-input::placeholder { color: var(--muted); }
+.add-btn { padding: 9px 16px; background: var(--accent); color: #0f0f13; border: none; border-radius: 8px; font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.15s; }
+.add-btn:hover { opacity: 0.85; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 11px; font-family: var(--font-body); padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.reset-btn:hover { color: var(--text); border-color: var(--muted); }
+.ep-btn { font-size: 12px; padding: 3px 8px; border-radius: 5px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; transition: all 0.15s; font-family: var(--font-body); }
+.ep-btn:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+.todo-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; transition: color 0.15s; }
+.todo-del:hover { color: var(--accent4); }
+.todo-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.day-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.day-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; background: var(--surface); color: var(--muted); }
+.day-badge.today { background: rgba(232,184,109,0.2); color: var(--accent); }
+.day-pick { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); cursor: pointer; background: var(--surface); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); transition: all 0.15s; user-select: none; }
+.day-pick:has(input:checked) { background: rgba(232,184,109,0.15); color: var(--accent); border-color: rgba(232,184,109,0.4); }
+.day-pick input { display: none; }
+.airing-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 7px; border-radius: 5px; flex-shrink: 0; }
+.airing-badge.live { background: rgba(255,123,123,0.15); color: var(--accent4); }
+.airing-badge.backlog { background: rgba(123,156,255,0.15); color: var(--accent2); }
+.airing-badge.done { background: rgba(109,219,184,0.15); color: var(--accent3); }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+.progress-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.3s; }
+.progress-fill.done-fill { background: var(--accent3); }
+.ep-controls { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.ep-display { font-size: 11px; color: var(--muted); font-weight: 500; min-width: 60px; text-align: center; }
+.watch-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 10px; background: var(--surface2); margin-bottom: 8px; border: 1px solid transparent; }
+.watch-thumb { width: 40px; height: 54px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; background: var(--surface); }
+.watch-info { flex: 1; min-width: 0; }
+.watch-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.watch-meta { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.chore-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; background: var(--surface2); margin-bottom: 6px; cursor: pointer; }
+.chore-item.done { opacity: 0.4; }
+.chore-item.done .chore-label { text-decoration: line-through; color: var(--muted); }
+.chore-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.chore-item.done .chore-check { background: var(--accent3); border-color: var(--accent3); color: #0f0f13; }
+.chore-label { font-weight: 400; flex: 1; }
+.todo-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; background: var(--surface2); margin-bottom: 6px; }
+.todo-item.done-todo { opacity: 0.4; }
+.todo-item.done-todo .todo-label { text-decoration: line-through; color: var(--muted); }
+.todo-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; }
+.todo-item.done-todo .todo-check { background: var(--accent); border-color: var(--accent); color: #0f0f13; }
+.todo-label { flex: 1; font-weight: 400; }
+.time-block { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px; margin-bottom: 6px; border-left: 3px solid transparent; background: var(--surface2); }
+.time-block.work    { border-color: var(--accent2); }
+.time-block.active  { border-color: var(--accent3); background: rgba(109,219,184,0.06); }
+.time-block.hobby   { border-color: var(--accent);  background: rgba(232,184,109,0.06); }
+.time-block.partner { border-color: #d97bff; }
+.time-block.sleep   { border-color: #555568; }
+.time-block.weekend { border-color: var(--accent4); background: rgba(255,123,123,0.06); }
+.time-block.chore   { border-color: #f0a05a; background: rgba(240,160,90,0.06); }
+.time-block.todob   { border-color: #a78bfa; background: rgba(167,139,250,0.06); }
+.block-time { font-family: var(--font-head); font-size: 11px; font-weight: 600; color: var(--muted); white-space: nowrap; min-width: 90px; }
+.block-label { font-weight: 500; color: var(--text); }
+.block-emoji { font-size: 14px; }
+.schedule-day { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 10px; margin-top: 16px; }
+.schedule-day:first-child { margin-top: 0; }
+.active-nudge { background: linear-gradient(135deg, rgba(109,219,184,0.12), rgba(109,219,184,0.04)); border: 1px solid rgba(109,219,184,0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.nudge-icon { font-size: 20px; }
+.nudge-text { font-size: 13px; color: var(--accent3); font-weight: 500; }
+.nudge-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* –– CALENDAR –– */
+.cal-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+.cal-main { display: flex; flex-direction: column; gap: 16px; }
+.cal-nav-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cal-view-label { font-family: var(–font-head); font-size: 15px; font-weight: 700; cursor: pointer; }
+.cal-view-label:hover { color: var(–accent); }
+.cal-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(–muted); margin-bottom: 10px; flex-wrap: wrap; }
+.cal-crumb { cursor: pointer; transition: color 0.15s; }
+.cal-crumb:hover { color: var(–accent); }
+.cal-crumb-sep { color: var(–border); }
+.cal-year-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.cal-month-btn { padding: 14px 8px; border-radius: 10px; background: var(–surface2); border: 1px solid transparent; cursor: pointer; text-align: center; font-family: var(–font-head); font-size: 13px; font-weight: 600; color: var(–text); transition: all 0.15s; position: relative; }
+.cal-month-btn:hover { border-color: var(–accent); color: var(–accent); }
+.cal-month-btn.has-entries::after { content: ‘’; position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: var(–accent); }
+.cal-month-btn.current-month { border-color: rgba(232,184,109,0.4); }
+.cal-day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-day-header { font-family: var(–font-head); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(–muted); text-align: center; padding: 4px 0 6px; }
+.cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(–muted); position: relative; transition: all 0.15s; gap: 2px; }
+.cal-day:hover { background: var(–surface2); color: var(–text); }
+.cal-day.in-month { color: var(–text); }
+.cal-day.today-cell { background: rgba(232,184,109,0.15); color: var(–accent); font-weight: 700; }
+.cal-day.selected-cell { background: var(–surface2); border: 1px solid var(–accent); color: var(–accent); }
+.cal-day.today-cell.selected-cell { background: rgba(232,184,109,0.2); }
+.cal-dot-row { display: flex; gap: 2px; justify-content: center; }
+.cal-dot { width: 4px; height: 4px; border-radius: 50%; }
+.cal-entry { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 9px; background: var(–surface2); margin-bottom: 6px; border-left: 3px solid transparent; }
+.cal-entry.event { border-color: var(–accent2); }
+.cal-entry.task  { border-color: var(–accent3); }
+.cal-entry.task.done-cal { opacity: 0.4; }
+.cal-entry.task.done-cal .cal-entry-text { text-decoration: line-through; color: var(–muted); }
+.cal-entry-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.cal-entry-body { flex: 1; min-width: 0; }
+.cal-entry-time { font-size: 10px; color: var(–muted); font-weight: 600; margin-bottom: 2px; }
+.cal-entry-text { font-size: 13px; color: var(–text); }
+.cal-empty { font-size: 13px; color: var(–muted); padding: 12px 0; font-style: italic; }
+
+/* Sidebar */
+.cal-sidebar { display: flex; flex-direction: column; gap: 14px; }
+.sidebar-section-title { font-family: var(–font-head); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(–muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.sidebar-section-title .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.sidebar-empty { font-size: 12px; color: var(–muted); font-style: italic; padding: 4px 0; }
+.sidebar-chore { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(–surface2); margin-bottom: 5px; cursor: pointer; }
+.sidebar-chore.done { opacity: 0.4; }
+.sidebar-chore.done .s-chore-label { text-decoration: line-through; color: var(–muted); }
+.s-check { width: 15px; height: 15px; border: 2px solid var(–border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+.sidebar-chore.done .s-check { background: var(–accent3); border-color: var(–accent3); color: #0f0f13; }
+.s-chore-label { font-size: 12px; flex: 1; }
+.sidebar-todo { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(–surface2); margin-bottom: 5px; }
+.sidebar-todo.done-todo { opacity: 0.4; }
+.sidebar-todo.done-todo .s-todo-label { text-decoration: line-through; color: var(–muted); }
+.s-todo-check { width: 15px; height: 15px; border: 2px solid var(–border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; }
+.sidebar-todo.done-todo .s-todo-check { background: var(–accent); border-color: var(–accent); color: #0f0f13; }
+.s-todo-label { font-size: 12px; flex: 1; }
+.sidebar-airing { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(–surface2); margin-bottom: 5px; }
+.with-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 4px; background: rgba(167,139,250,0.15); color: #a78bfa; flex-shrink: 0; }
+.sidebar-airing-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(255,123,123,0.15); color: var(–accent4); flex-shrink: 0; }
+
+/* –– MOBILE –– */
+@media (max-width: 900px) { .cal-layout { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+body { padding: 10px 12px 20px; font-size: 15px; }
+.dashboard { max-width: 100%; }
+header { margin-bottom: 14px; padding-bottom: 12px; }
+.site-title { font-size: 22px; }
+
+/* Top tab bar - mobile friendly */
+.tabs {
+display: flex; gap: 0; margin-bottom: 16px; padding: 3px;
+background: var(–surface); border-radius: 10px; width: 100%;
+}
+.tab-btn {
+flex: 1; padding: 9px 4px; border-radius: 7px;
+font-size: 10px; letter-spacing: 0.04em;
+}
+
+/* Cards */
+.card { padding: 14px 12px; border-radius: 12px; }
+.grid-2 { grid-template-columns: 1fr; gap: 12px; }
+
+/* Calendar */
+.cal-layout { grid-template-columns: 1fr; gap: 12px; }
+.cal-year-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.cal-month-btn { padding: 12px 4px; font-size: 12px; }
+.cal-day { font-size: 13px; }
+.cal-nav-row { margin-bottom: 10px; }
+
+/* Watch items */
+.watch-item { padding: 10px 10px; }
+.watch-thumb { width: 36px; height: 48px; font-size: 16px; }
+.watch-title { font-size: 14px; }
+.ep-btn { font-size: 13px; padding: 6px 12px; }
+.ep-display { font-size: 12px; }
+.ep-controls { gap: 6px; margin-top: 8px; }
+
+/* Chores/todos */
+.chore-item { padding: 11px 12px; }
+.todo-item  { padding: 11px 12px; }
+.chore-check, .todo-check { width: 22px; height: 22px; font-size: 13px; flex-shrink: 0; }
+.chore-label, .todo-label { font-size: 14px; }
+
+/* Inputs */
+.todo-input { font-size: 16px; padding: 10px 12px; } /* 16px prevents iOS zoom */
+.add-btn { padding: 10px 16px; font-size: 13px; }
+.reset-btn { padding: 6px 12px; font-size: 12px; }
+
+/* Modal */
+.modal-overlay { align-items: flex-end; padding: 0; }
+.modal-box { border-radius: 20px 20px 0 0; max-height: 92vh; max-width: 100%; }
+
+/* Section headers */
+.section-header { flex-wrap: wrap; gap: 8px; }
+.card-title { font-size: 12px; }
+
+/* Collapse */
+.collapse-header { padding: 10px 12px; }
+.collapse-body { padding: 8px; }
+
+/* Schedule time blocks */
+.time-block { padding: 10px; gap: 8px; }
+.block-time { font-size: 11px; min-width: 80px; }
+.block-label { font-size: 13px; }
+}
+
+/* –– MODAL –– */
+.modal-overlay {
+position: fixed; inset: 0; z-index: 1000;
+background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+display: flex; align-items: center; justify-content: center; padding: 20px;
+opacity: 0; pointer-events: none; transition: opacity 0.18s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+background: var(–surface); border: 1px solid var(–border); border-radius: 18px;
+width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto;
+box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+transform: translateY(12px); transition: transform 0.18s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-header {
+display: flex; align-items: flex-start; gap: 14px;
+padding: 20px 20px 16px; border-bottom: 1px solid var(–border);
+}
+.modal-emoji {
+width: 52px; height: 52px; border-radius: 10px; background: var(–surface2);
+display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;
+}
+.modal-title-block { flex: 1; min-width: 0; }
+.modal-title { font-family: var(–font-head); font-size: 16px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; }
+.modal-subtitle { font-size: 12px; color: var(–muted); }
+.modal-close {
+background: none; border: none; color: var(–muted); font-size: 20px;
+cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 6px; transition: color 0.15s; flex-shrink: 0;
+}
+.modal-close:hover { color: var(–text); }
+.modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.modal-row { display: flex; align-items: center; gap: 10px; }
+.modal-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(–muted); min-width: 80px; }
+.modal-value { font-size: 13px; color: var(–text); }
+.modal-actions { display: flex; gap: 8px; padding: 14px 20px; border-top: 1px solid var(–border); }
+.modal-edit-area { padding: 0 20px 16px; display: none; flex-direction: column; gap: 8px; }
+.modal-edit-area.open { display: flex; }
+.modal-status-btn {
+font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+border: 1px solid var(–border); background: transparent; color: var(–muted);
+cursor: pointer; transition: all 0.15s; font-family: var(–font-body);
+}
+.modal-status-btn.active { background: rgba(232,184,109,0.15); color: var(–accent); border-color: rgba(232,184,109,0.4); }
+
+/* –– COLLAPSIBLE SECTIONS –– */
+.collapse-section { margin-bottom: 10px; }
+.collapse-header {
+display: flex; align-items: center; justify-content: space-between;
+padding: 8px 12px; border-radius: 10px; cursor: pointer;
+background: var(–surface2); border: 1px solid var(–border);
+transition: border-color 0.15s; user-select: none;
+}
+.collapse-header:hover { border-color: var(–muted); }
+.collapse-header.open { border-radius: 10px 10px 0 0; border-bottom-color: transparent; }
+.collapse-header-left { display: flex; align-items: center; gap: 8px; }
+.collapse-label {
+font-family: var(–font-head); font-size: 10px; font-weight: 700;
+letter-spacing: 0.1em; text-transform: uppercase;
+}
+.collapse-count {
+font-size: 10px; color: var(–muted); font-family: var(–font-body);
+font-weight: 400; letter-spacing: 0;
+}
+.collapse-chevron { font-size: 11px; color: var(–muted); transition: transform 0.2s; }
+.collapse-header.open .collapse-chevron { transform: rotate(180deg); }
+.collapse-body {
+display: none; border: 1px solid var(–border); border-top: none;
+border-radius: 0 0 10px 10px; padding: 10px;
+background: var(–surface2);
+}
+.collapse-body.open { display: block; }
+
+/* clickable watch-item */
+.watch-item.clickable { cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.watch-item.clickable:hover { border-color: rgba(232,184,109,0.35); background: rgba(232,184,109,0.04); }
+</style>
+
+</head>
+<body>
+<div class="dashboard">
+
+<header>
+  <div class="site-title">R<span>&</span>K</div>
+  <div class="date-display" id="dateDisplay"></div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn" id="tabHome"      onclick="showTab('calendar',this)">Home</button>
+  <button class="tab-btn" id="tabSchedule"  onclick="showTab('schedule',this)">Schedule</button>
+  <button class="tab-btn" id="tabChores"    onclick="showTab('chores',this)">Chores</button>
+  <button class="tab-btn" id="tabWatchlist" onclick="showTab('watchlist',this)">Entertainment</button>
+</div>
+
+<!-- HOME TAB -->
+
+<div class="tab-panel" id="tab-calendar">
+  <div class="cal-layout">
+    <div class="cal-main">
+      <div class="card">
+        <div class="cal-breadcrumb" id="calBreadcrumb"></div>
+        <div class="cal-nav-row">
+          <button class="ep-btn" id="calPrevBtn" style="font-size:16px;padding:4px 10px;">‹</button>
+          <div class="cal-view-label" id="calViewLabel" onclick="calDrillUp()"></div>
+          <button class="ep-btn" id="calNextBtn" style="font-size:16px;padding:4px 10px;">›</button>
+        </div>
+        <div id="calGrid"></div>
+      </div>
+      <div class="card" id="calDayCard" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div id="calDayLabel" style="font-family:var(--font-head);font-size:14px;font-weight:700;"></div>
+          <button class="reset-btn" onclick="toggleCalForm()">+ Add entry</button>
+        </div>
+        <div id="calAddForm" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:8px;">
+              <select id="calEntryType" class="todo-input" style="max-width:120px;">
+                <option value="event">📅 Event</option>
+                <option value="task">✅ Task</option>
+              </select>
+              <input type="text" id="calEntryTime" class="todo-input" placeholder="Time (optional)" style="max-width:130px;" />
+            </div>
+            <input type="text" id="calEntryText" class="todo-input" placeholder="Description..." onkeydown="if(event.key==='Enter') saveCalEntry()" />
+            <div style="display:flex;gap:8px;">
+              <button class="add-btn" style="flex:1;" onclick="saveCalEntry()">+ Add</button>
+              <button class="reset-btn" onclick="toggleCalForm()">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div id="calDayEntries"></div>
+      </div>
+    </div>
+
+```
+<div class="cal-sidebar">
+  <div class="card">
+    <div class="sidebar-section-title"><span class="dot" style="background:var(--accent4)"></span>Airing Today</div>
+    <div id="sidebarAiring"></div>
+  </div>
+  <div class="card">
+    <div class="sidebar-section-title"><span class="dot" style="background:var(--accent2)"></span>Backlog</div>
+    <div id="sidebarBacklog"></div>
+  </div>
+  <div class="card">
+    <div class="sidebar-section-title"><span class="dot" style="background:var(--accent)"></span>Today's Chores</div>
+    <div id="sidebarChores"></div>
+  </div>
+  <div class="card">
+    <div class="sidebar-section-title"><span class="dot" style="background:var(--accent2)"></span>To-Do</div>
+    <div id="sidebarTodos"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input type="text" id="sidebarTodoInput" class="todo-input" placeholder="Quick add task..." onkeydown="if(event.key==='Enter') quickAddTodo()" style="font-size:12px;padding:6px 10px;" />
+      <button class="add-btn" style="padding:6px 12px;font-size:11px;" onclick="quickAddTodo()">+</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+</div><!-- /#tab-calendar -->
+<!-- CHORES TAB -->
+<div class="tab-panel" id="tab-chores">
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0"><span class="dot" style="background:var(--accent)"></span>Chores</div>
+        <div style="display:flex;gap:8px;">
+          <button class="reset-btn" onclick="resetTodayChores()">Reset today</button>
+          <button class="reset-btn" onclick="resetAllChores()">Reset all</button>
+          <button class="reset-btn" onclick="toggleChoreForm()">+ Add</button>
+        </div>
+      </div>
+      <div id="addChoreForm" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border);">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input type="text" id="choreInput" class="todo-input" placeholder="Chore name..." />
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Assign to day(s):</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;" id="choreDayPicker">
+              <label class="day-pick"><input type="checkbox" value="Mon" /> Mon</label>
+              <label class="day-pick"><input type="checkbox" value="Tue" /> Tue</label>
+              <label class="day-pick"><input type="checkbox" value="Wed" /> Wed</label>
+              <label class="day-pick"><input type="checkbox" value="Thu" /> Thu</label>
+              <label class="day-pick"><input type="checkbox" value="Fri" /> Fri</label>
+              <label class="day-pick"><input type="checkbox" value="Sat" /> Sat</label>
+              <label class="day-pick"><input type="checkbox" value="Sun" /> Sun</label>
+              <label class="day-pick"><input type="checkbox" value="Every day" /> Every day</label>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="add-btn" style="flex:1" onclick="addChore()">+ Add</button>
+            <button class="reset-btn" onclick="toggleChoreForm()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div id="choreList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>To-Do</div>
+      <div class="todo-input-row">
+        <input type="text" id="todoInput" class="todo-input" placeholder="Add a task..." onkeydown="if(event.key==='Enter') addTodo()" />
+        <button class="add-btn" onclick="addTodo()">+ Add</button>
+      </div>
+      <div id="todoList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-schedule">
+  <div class="active-nudge">
+    <div class="nudge-icon">🏃</div>
+    <div>
+      <div class="nudge-text">Active time: 2:30–4:30p · Before settling in with your partner</div>
+      <div class="nudge-sub">Walk the dog, quick workout, get outside — even 20 mins counts!</div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Weekday Routine</div>
+      <div class="schedule-day">Mon – Fri</div>
+      <div class="time-block work"><span class="block-emoji">💼</span><div class="block-time">6:30 – 2:30/3:30p</div><div class="block-label">Work</div></div>
+      <div class="time-block active"><span class="block-emoji">🐕</span><div class="block-time">2:30 – 4:30p</div><div class="block-label">Active time <span style="font-size:11px;color:var(--accent3)">(walk / workout)</span></div></div>
+      <div class="time-block chore"><span class="block-emoji">🧹</span><div class="block-time">~4:30p</div><div class="block-label">Chores</div></div>
+      <div class="time-block todob"><span class="block-emoji">✅</span><div class="block-time">~4:30p</div><div class="block-label">To-dos</div></div>
+      <div class="time-block partner"><span class="block-emoji">📺</span><div class="block-time">~5:00 – 7:00p</div><div class="block-label">Wind down + TV with partner</div></div>
+      <div class="time-block hobby"><span class="block-emoji">🎮</span><div class="block-time">7:00 – 9:30p</div><div class="block-label">Personal hobby time</div></div>
+      <div class="time-block sleep"><span class="block-emoji">🌙</span><div class="block-time">~9:30p</div><div class="block-label">Bed</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent4)"></span>Weekend Routine</div>
+      <div class="schedule-day">Sat & Sun</div>
+      <div class="time-block active"><span class="block-emoji">🐕</span><div class="block-time">Morning</div><div class="block-label">Active time <span style="font-size:11px;color:var(--accent3)">(walk / workout)</span></div></div>
+      <div class="time-block weekend"><span class="block-emoji">🎬</span><div class="block-time">10/10:30a</div><div class="block-label">Movie with partner</div></div>
+      <div class="time-block chore"><span class="block-emoji">🧹</span><div class="block-time">After movie</div><div class="block-label">Chores</div></div>
+      <div class="time-block todob"><span class="block-emoji">✅</span><div class="block-time">After movie</div><div class="block-label">To-dos</div></div>
+      <div class="time-block hobby"><span class="block-emoji">🎮</span><div class="block-time">Afternoon</div><div class="block-label">Hobby time</div></div>
+      <div class="time-block partner"><span class="block-emoji">📺</span><div class="block-time">Evening</div><div class="block-label">TV with partner</div></div>
+      <div class="time-block sleep"><span class="block-emoji">🌙</span><div class="block-time">~9:30p</div><div class="block-label">Bed</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title"><span class="dot" style="background:var(--accent3)"></span>Active Time Ideas</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">🐕 Dog walk (20–30 min)</span>
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">🏋️ Home workout</span>
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">🚶 Neighborhood walk</span>
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">🧘 Stretch / yoga</span>
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">🚴 Bike ride</span>
+      <span style="background:var(--surface2);padding:7px 14px;border-radius:20px;font-size:13px;">💪 Bodyweight circuit</span>
+    </div>
+  </div>
+</div>
+
+<!-- WATCHLIST TAB -->
+
+<div class="tab-panel" id="tab-watchlist">
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+```
+<!-- TV -->
+<div class="card">
+  <div class="section-header">
+    <div class="card-title" style="margin:0"><span class="dot" style="background:var(--accent4)"></span>TV</div>
+    <button class="reset-btn" onclick="toggleAddForm('tv')">+ Add Show</button>
+  </div>
+  <div id="addTVForm" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border);">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input type="text" id="tvTitle" class="todo-input" placeholder="Show title" />
+      <input type="text" id="tvSub" class="todo-input" placeholder="Season (optional)" />
+      <div style="display:flex;gap:8px;">
+        <input type="number" id="tvCurEp" class="todo-input" placeholder="Current ep" min="1" style="flex:1" />
+        <input type="number" id="tvTotalEp" class="todo-input" placeholder="Total eps" min="1" style="flex:1" />
+        <input type="text" id="tvEmoji" class="todo-input" placeholder="📺" style="width:52px;text-align:center;" maxlength="2" />
+      </div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="tvWith" class="todo-input" placeholder="Watch with (e.g. R&K, Solo)" style="flex:1;" />
+        <select id="tvStatus" class="todo-input" style="flex:1;">
+          <option value="watching">Currently Watching</option>
+          <option value="airing">Currently Airing</option>
+          <option value="backlog">Backlog</option>
+        </select>
+      </div>
+      <div id="tvAiringFields" style="display:none;flex-direction:column;gap:8px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Airs on:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="tvDayPicker">
+            <label class="day-pick"><input type="checkbox" value="S" /> Sun</label>
+            <label class="day-pick"><input type="checkbox" value="M" /> Mon</label>
+            <label class="day-pick"><input type="checkbox" value="T" /> Tue</label>
+            <label class="day-pick"><input type="checkbox" value="W" /> Wed</label>
+            <label class="day-pick"><input type="checkbox" value="Th" /> Thu</label>
+            <label class="day-pick"><input type="checkbox" value="F" /> Fri</label>
+            <label class="day-pick"><input type="checkbox" value="Sa" /> Sat</label>
+          </div>
+        </div>
+        <input type="date" id="tvEndDate" class="todo-input" placeholder="End date (optional)" />
+        <input type="date" id="tvPremiereDate" class="todo-input" placeholder="Premiere date (for upcoming)" />
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="add-btn" style="flex:1" onclick="addTVShow()">+ Add</button>
+        <button class="reset-btn" onclick="toggleAddForm('tv')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="tvList"></div>
+</div>
+
+<!-- MOVIES -->
+<div class="card">
+  <div class="section-header">
+    <div class="card-title" style="margin:0"><span class="dot" style="background:#c084fc"></span>Movies</div>
+    <button class="reset-btn" onclick="toggleMediaForm('movie')">+ Add Movie</button>
+  </div>
+  <div id="addMovieForm" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border);">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="movieEmoji" class="todo-input" placeholder="🎬" style="width:52px;text-align:center;" maxlength="2" />
+        <input type="text" id="movieTitle" class="todo-input" placeholder="Movie title" style="flex:1;" />
+      </div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="movieReleaseDate" class="todo-input" placeholder="Release date (e.g. 3/8/2026)" style="flex:1;" />
+        <input type="text" id="moviePlanDate" class="todo-input" placeholder="Plan to see (optional)" style="flex:1;" />
+      </div>
+      <div style="display:flex;gap:8px;">
+        <select id="movieStatus" class="todo-input" style="flex:1;">
+          <option value="upcoming">Upcoming</option>
+          <option value="backlog">Backlog / Want to See</option>
+          <option value="missed">Missed (in theaters)</option>
+          <option value="done">Watched</option>
+        </select>
+        <button class="add-btn" style="flex:1" onclick="addMedia('movie')">+ Add</button>
+        <button class="reset-btn" onclick="toggleMediaForm('movie')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="movieList"></div>
+</div>
+
+<!-- GAMES -->
+<div class="card">
+  <div class="section-header">
+    <div class="card-title" style="margin:0"><span class="dot" style="background:#a78bfa"></span>Games</div>
+    <button class="reset-btn" onclick="toggleMediaForm('game')">+ Add Game</button>
+  </div>
+  <div id="addGameForm" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border);">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input type="text" id="gameTitle" class="todo-input" placeholder="Game title" />
+      <input type="text" id="gamePlatform" class="todo-input" placeholder="Platform (optional)" />
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="gameEmoji" class="todo-input" placeholder="🎮" style="width:52px;text-align:center;" maxlength="2" />
+        <select id="gameStatus" class="todo-input" style="flex:1;">
+          <option value="playing">Currently Playing</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="backlog">Backlog</option>
+          <option value="done">Finished</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="gameRelease" class="todo-input" placeholder="Release date (optional)" style="flex:1;" />
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="add-btn" style="flex:1" onclick="addMedia('game')">+ Add</button>
+        <button class="reset-btn" onclick="toggleMediaForm('game')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="gameList"></div>
+</div>
+
+<!-- BOOKS -->
+<div class="card">
+  <div class="section-header">
+    <div class="card-title" style="margin:0"><span class="dot" style="background:var(--accent3)"></span>Books</div>
+    <button class="reset-btn" onclick="toggleMediaForm('book')">+ Add Book</button>
+  </div>
+  <div id="addBookForm" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border);">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <input type="text" id="bookTitle" class="todo-input" placeholder="Book title" />
+      <input type="text" id="bookAuthor" class="todo-input" placeholder="Author (optional)" />
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="bookEmoji" class="todo-input" placeholder="📖" style="width:52px;text-align:center;" maxlength="2" />
+        <select id="bookStatus" class="todo-input" style="flex:1;">
+          <option value="reading">Currently Reading</option>
+          <option value="backlog">Backlog</option>
+          <option value="done">Finished</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="add-btn" style="flex:1" onclick="addMedia('book')">+ Add</button>
+        <button class="reset-btn" onclick="toggleMediaForm('book')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="bookList"></div>
+</div>
+```
+
+  </div>
+</div>
+
+</div><!-- /.dashboard -->
+
+<!-- MEDIA DETAIL MODAL -->
+
+<div class="modal-overlay" id="mediaModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-emoji" id="modalEmoji"></div>
+      <div class="modal-title-block">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-edit-area" id="modalEditArea"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+<script>
+// ---- UTILS ----
+const _now = new Date();
+const MONTHS     = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_S   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS_S     = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAYS_FULL  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function fmtKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function todayKey(){ return fmtKey(_now.getFullYear(),_now.getMonth(),_now.getDate()); }
+
+// date header
+document.getElementById(‘dateDisplay’).textContent =
+`${DAYS_FULL[_now.getDay()]}, ${MONTHS_S[_now.getMonth()]} ${_now.getDate()}, ${_now.getFullYear()}`;
+
+// –– TABS ––
+function showTab(name, btn) {
+document.querySelectorAll(’.tab-panel’).forEach(p => p.classList.remove(‘active’));
+document.querySelectorAll(’.tab-btn’).forEach(b => b.classList.remove(‘active’));
+document.getElementById(‘tab-’+name).classList.add(‘active’);
+if (btn) btn.classList.add(‘active’);
+if (name===‘calendar’)  { renderCalendar(); renderSidebar(); }
+if (name===‘chores’)    { renderChores(); renderTodos(); }
+if (name===‘watchlist’) renderWatchlist();
+}
+
+// –– CHORES ––
+const todayDayName = DAYS_S[_now.getDay()];
+let chores = [
+{ label:‘Make bed’,                     days:[‘Every day’], done:false },
+{ label:‘Wash dishes / load dishwasher’, days:[‘Every day’], done:false },
+{ label:‘Walk the dog’,                 days:[‘Every day’], done:false },
+{ label:‘Wipe down kitchen counters’,   days:[‘Every day’], done:false },
+{ label:‘Quick tidy / pick up clutter’, days:[‘Every day’], done:false },
+{ label:‘Vacuum’,                        days:[‘Sat’],       done:false },
+{ label:‘Mop floors’,                   days:[‘Sat’],       done:false },
+{ label:‘Clean bathrooms’,              days:[‘Sun’],       done:false },
+{ label:‘Do laundry’,                   days:[‘Sun’],       done:false },
+{ label:‘Take out trash / recycling’,   days:[‘Mon’],       done:false },
+{ label:‘Grocery run’,                  days:[‘Sat’],       done:false },
+{ label:‘Wash bed sheets’,              days:[‘Sun’],       done:false },
+{ label:‘Clean fridge’,                 days:[‘Sat’],       done:false },
+{ label:‘Dust shelves & fans’,          days:[‘Sat’],       done:false },
+];
+function isDueToday(c){ return c.days.includes(‘Every day’)||c.days.includes(todayDayName); }
+function renderChores(){
+const el=document.getElementById(‘choreList’); if(!el) return;
+el.innerHTML=’’;
+const sorted=[…chores].map((c,i)=>({…c,idx:i})).sort((a,b)=>{
+const at=isDueToday(a)?0:1,bt=isDueToday(b)?0:1;
+if(at!==bt) return at-bt;
+return (a.done?1:0)-(b.done?1:0);
+});
+let div=false;
+sorted.forEach(c=>{
+if(!isDueToday(c)&&!div){ div=true; const d=document.createElement(‘div’); d.style.cssText=‘font-family:var(–font-head);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–muted);margin:14px 0 6px;’; d.textContent=‘Other days’; el.appendChild(d); }
+const labels=c.days.map(d=>`<span class="day-badge ${(d===todayDayName||d==='Every day')&&isDueToday(c)?'today':''}">${d}</span>`).join(’’);
+const row=document.createElement(‘div’); row.className=‘chore-item’+(c.done?’ done’:’’);
+row.innerHTML=`<div class="chore-check">${c.done?'✓':''}</div><div class="chore-label">${c.label}</div><div class="day-badges" style="margin:0;gap:3px;">${labels}</div><button class="todo-del" onclick="event.stopPropagation();removeChore(${c.idx})">✕</button>`;
+row.querySelector(’.chore-check’).addEventListener(‘click’,e=>{e.stopPropagation();chores[c.idx].done=!chores[c.idx].done;renderChores();renderSidebar();});
+el.appendChild(row);
+});
+if(!chores.length) el.innerHTML=’<div style="color:var(--muted);font-size:13px;padding:10px;">No chores yet!</div>’;
+saveAll();
+}
+function toggleChoreForm(){ const f=document.getElementById(‘addChoreForm’);f.style.display=f.style.display===‘none’?‘block’:‘none’; }
+function addChore(){
+const val=document.getElementById(‘choreInput’).value.trim(); if(!val) return;
+const days=[…document.querySelectorAll(’#choreDayPicker input:checked’)].map(cb=>cb.value);
+if(!days.length){alert(‘Pick at least one day.’);return;}
+chores.push({label:val,days,done:false});
+document.getElementById(‘choreInput’).value=’’;
+document.querySelectorAll(’#choreDayPicker input’).forEach(cb=>cb.checked=false);
+toggleChoreForm(); renderChores(); renderSidebar();
+}
+function removeChore(i){ chores.splice(i,1); renderChores(); renderSidebar(); }
+function resetTodayChores(){ chores.forEach(c=>{if(isDueToday(c))c.done=false;}); renderChores(); renderSidebar(); }
+function resetAllChores(){ chores.forEach(c=>c.done=false); renderChores(); renderSidebar(); }
+
+// –– WATCHLIST ––
+const todayAirLabel = [‘S’,‘M’,‘T’,‘W’,‘Th’,‘F’,‘Sa’][_now.getDay()];
+// ── TV SHOW DATA ──────────────────────────────────────────────────────────────
+// status: “watching” | “airing” | “backlog” | “upcoming” (auto when no days + premiereDate)
+let tvData = [
+{title:“MAFS Australia”,    sub:“Season 13”,  days:[‘S’,‘M’,‘T’,‘W’], currentEp:22, totalEp:null, endDate:null,      emoji:‘💍’,  with:“R&K”,  status:“airing”,   watched:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], airedOn:{‘21’:‘2026-03-04’,‘22’:‘2026-03-05’}},
+{title:“Shrinking”,         sub:“Season 3”,   days:[‘W’],             currentEp:7,  totalEp:null, endDate:null,      emoji:‘🛋️’, with:“R&K”,  status:“airing”,   watched:[1,2,3,4,5,6], airedOn:{‘7’:‘2026-03-04’}},
+{title:“Survivor 50”,       sub:””,           days:[‘Th’],            currentEp:3,  totalEp:null, endDate:null,      emoji:‘🏝️’, with:“R&K”,  status:“airing”,   watched:[1,2], airedOn:{‘3’:‘2026-03-05’}},
+{title:“The Pitt”,          sub:“Season 2”,   days:[‘F’],             currentEp:9,  totalEp:null, endDate:null,      emoji:‘🏥’,  with:“R&K”,  status:“airing”,   watched:[1,2,3,4,5,6,7,8,9], airedOn:{}},
+{title:“Cody Ko”,           sub:“YouTube”,    days:[‘S’,‘T’,‘Th’,‘F’],currentEp:1,  totalEp:null, endDate:null,      emoji:‘🎥’,  with:“Solo”, status:“airing”,   watched:[1], airedOn:{}},
+{title:“SNL”,               sub:“Season 50”,  days:[‘Sa’],            currentEp:1,  totalEp:null, endDate:null,      emoji:‘🎭’,  with:“R&K”,  status:“airing”,   watched:[1], airedOn:{}},
+{title:“Daredevil: Born Again”, sub:“Season 2”, days:[],             currentEp:1,  totalEp:null, endDate:null,      emoji:‘😈’,  with:“Solo”, status:“upcoming”, premiereDate:“2026-03-24”, watched:[], airedOn:{}},
+{title:“Invincible”,        sub:“Season 4”,   days:[],                currentEp:1,  totalEp:null, endDate:null,      emoji:‘🦸’,  with:“Solo”, status:“upcoming”, premiereDate:“2026-03-18”, watched:[], airedOn:{}},
+{title:“Daredevil: Born Again”, sub:“Season 1”, days:[], currentEp:9, totalEp:9,   endDate:null, emoji:‘😈’,  with:“Solo”, status:“watching”,  watched:[1,2,3,4,5,6,7,8], airedOn:{}},
+{title:“Yellowjackets”,     sub:“Season 3”,   days:[],                currentEp:1,  totalEp:null, endDate:null,      emoji:‘🌲’,  with:“Solo”, status:“backlog”,  watched:[], airedOn:{}},
+{title:“Ironheart”,         sub:“Season 1”,   days:[],                currentEp:1,  totalEp:null, endDate:null,      emoji:‘🦾’,  with:“Solo”, status:“backlog”,  watched:[], airedOn:{}},
+];
+
+// ── BOOK / GAME / MOVIE DATA ──────────────────────────────────────────────────
+let bookData = [];
+let gameData = [
+{title:‘Control: Resonant’,      platform:’’, emoji:‘🎮’, status:‘backlog’,  release:’’},
+{title:‘Star Wars Galactic Racer’,platform:’’, emoji:‘🎮’, status:‘backlog’,  release:’’},
+{title:‘Fable’,                   platform:’’, emoji:‘🎮’, status:‘upcoming’, release:’’},
+];
+let movieData = [];
+
+// ── STATUS CONFIG ─────────────────────────────────────────────────────────────
+// TV statuses
+const TV_STATUS_LABEL = {
+watching:‘Currently Watching’, airing:‘Currently Airing’,
+backlog:‘Backlog’, upcoming:‘Upcoming’,
+};
+const TV_STATUS_COLOR = {
+watching:‘var(–accent3)’, airing:‘var(–accent4)’,
+backlog:‘var(–muted)’,    upcoming:’#a78bfa’,
+};
+const TV_GROUP_ORDER = [‘watching’,‘airing’,‘upcoming’,‘backlog’];
+
+// Movie statuses
+const MOVIE_STATUS_LABEL = {
+upcoming:‘Upcoming’, backlog:‘Backlog’, missed:‘Missed’, done:‘Watched’,
+};
+const MOVIE_STATUS_COLOR = {
+upcoming:’#c084fc’, backlog:‘var(–accent)’, missed:‘var(–accent4)’, done:‘var(–accent2)’,
+};
+const MOVIE_GROUP_ORDER = [‘upcoming’,‘backlog’,‘missed’,‘done’];
+
+// Game statuses
+const GAME_STATUS_LABEL = {
+playing:‘Currently Playing’, upcoming:‘Upcoming’, backlog:‘Backlog’, done:‘Finished’,
+};
+const GAME_STATUS_COLOR = {
+playing:’#a78bfa’, upcoming:’#c084fc’, backlog:‘var(–muted)’, done:‘var(–accent2)’,
+};
+const GAME_GROUP_ORDER = [‘playing’,‘upcoming’,‘backlog’,‘done’];
+
+// Book statuses
+const BOOK_STATUS_LABEL = {
+reading:‘Currently Reading’, backlog:‘Backlog’, done:‘Finished’,
+};
+const BOOK_STATUS_COLOR = {
+reading:‘var(–accent3)’, backlog:‘var(–muted)’, done:‘var(–accent2)’,
+};
+const BOOK_GROUP_ORDER = [‘reading’,‘backlog’,‘done’];
+
+// Legacy aliases used by modal
+const MEDIA_STATUS_LABEL = {…MOVIE_STATUS_LABEL, …GAME_STATUS_LABEL, …BOOK_STATUS_LABEL};
+const MEDIA_STATUS_COLOR = {…MOVIE_STATUS_COLOR, …GAME_STATUS_COLOR, …BOOK_STATUS_COLOR};
+const MEDIA_CYCLES = {
+book:  [‘reading’,‘backlog’,‘done’],
+game:  [‘playing’,‘upcoming’,‘backlog’,‘done’],
+movie: [‘upcoming’,‘backlog’,‘missed’,‘done’],
+};
+const MEDIA_GROUP_ORDER = { book: BOOK_GROUP_ORDER, game: GAME_GROUP_ORDER, movie: MOVIE_GROUP_ORDER };
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+function daysUntil(ds){if(!ds)return null;const e=new Date(ds+‘T00:00:00’),n=new Date();n.setHours(0,0,0,0);return Math.round((e-n)/86400000);}
+function fmtED(ds){if(!ds)return null;const d=new Date(ds+‘T00:00:00’);return `${MONTHS_S[d.getMonth()]} ${d.getDate()}`;}
+
+function getCatchUp(showIdx) {
+// Returns episodes that have aired (on or before today) but haven’t been watched.
+const s = tvData[showIdx];
+if (!s || s.status===‘backlog’ || s.status===‘watching’ || s.status===‘upcoming’) return [];
+const tk = todayKey();
+const result = [];
+// Check all eps up to and including currentEp
+for (let ep = 1; ep <= s.currentEp; ep++) {
+if (s.watched.includes(ep)) continue;
+const airedDate = s.airedOn[ep];
+if (airedDate) {
+// Has an explicit air date — behind if date has passed (including today)
+if (airedDate <= tk) result.push(ep);
+} else if (ep < s.currentEp) {
+// No air date but tracker advanced past it — definitely aired
+result.push(ep);
+}
+// ep === currentEp, no airedDate: unknown, skip
+}
+// Also check ep BEYOND currentEp if it has an airedOn stamp that has passed
+// (can happen if mergeImportedSchedule stamped ahead)
+const nextEp = s.currentEp + 1;
+if (!s.watched.includes(nextEp)) {
+const nextAired = s.airedOn && s.airedOn[nextEp];
+if (nextAired && nextAired <= tk) result.push(nextEp);
+}
+return result;
+}
+
+function toggleAddForm(t){
+if (t === ‘tv’) {
+const e = document.getElementById(‘addTVForm’);
+e.style.display = e.style.display===‘none’ ? ‘block’ : ‘none’;
+// Show/hide airing-specific fields based on status
+const sel = document.getElementById(‘tvStatus’);
+if (sel) toggleTVFormFields(sel.value);
+}
+}
+function toggleTVFormFields(val) {
+const af = document.getElementById(‘tvAiringFields’);
+if (af) af.style.display = (val===‘airing’||val===‘upcoming’) ? ‘flex’ : ‘none’;
+}
+
+function addTVShow() {
+const title = document.getElementById(‘tvTitle’).value.trim(); if(!title) return;
+const status = document.getElementById(‘tvStatus’).value;
+const days = status===‘airing’ ? […document.querySelectorAll(’#tvDayPicker input:checked’)].map(cb=>cb.value) : [];
+tvData.push({
+title,
+sub:          document.getElementById(‘tvSub’).value.trim(),
+currentEp:    parseInt(document.getElementById(‘tvCurEp’).value)||1,
+totalEp:      parseInt(document.getElementById(‘tvTotalEp’).value)||null,
+emoji:        document.getElementById(‘tvEmoji’).value.trim()||‘📺’,
+with:         document.getElementById(‘tvWith’).value.trim()||null,
+status,
+days,
+endDate:      document.getElementById(‘tvEndDate’).value||null,
+premiereDate: document.getElementById(‘tvPremiereDate’).value||null,
+watched:      [],
+airedOn:      {},
+});
+[‘tvTitle’,‘tvSub’,‘tvCurEp’,‘tvTotalEp’,‘tvEmoji’,‘tvWith’,‘tvEndDate’,‘tvPremiereDate’].forEach(id=>document.getElementById(id).value=’’);
+document.querySelectorAll(’#tvDayPicker input’).forEach(cb=>cb.checked=false);
+toggleAddForm(‘tv’);
+renderWatchlist(); renderSidebar();
+}
+
+// Legacy add functions (old backlog/airing forms removed but keep stubs)
+function addBacklogShow(){}
+function addAiringShow(){}
+
+// ── TV RENDER ─────────────────────────────────────────────────────────────────
+function renderWatchlist(){
+const tvEl = document.getElementById(‘tvList’);
+if (!tvEl) return;
+tvEl.innerHTML = ‘’;
+
+// Group by status
+const groups = {watching:[], airing:[], upcoming:[], backlog:[]};
+tvData.forEach((item, i) => {
+// Auto-classify: if has premiereDate and no days → upcoming
+const effStatus = (item.status === ‘airing’ && (!item.days || !item.days.length) && item.premiereDate) ? ‘upcoming’ : item.status;
+if (!groups[effStatus]) groups[effStatus] = [];
+groups[effStatus].push({…item, _i: i, effStatus});
+});
+
+// Sort upcoming by premiereDate
+groups.upcoming.sort((a,b) => {
+const da = a.premiereDate ? new Date(a.premiereDate) : null;
+const db = b.premiereDate ? new Date(b.premiereDate) : null;
+if (!da && !db) return 0; if (!da) return 1; if (!db) return -1; return da - db;
+});
+
+TV_GROUP_ORDER.forEach(status => {
+let items = groups[status];
+if (!items.length) return;
+const color = TV_STATUS_COLOR[status];
+const label = TV_STATUS_LABEL[status];
+let html = ‘’;
+
+```
+// For airing: 3-tier sort — behind first, then airs today, then by next upcoming air day
+if (status === 'airing') {
+  const DAY_ORDER = ['S','M','T','W','Th','F','Sa'];
+  const todayIdx = DAY_ORDER.indexOf(todayAirLabel);
+  // Returns how many days until a show next airs (0 = today, 1 = tomorrow, etc.)
+  function daysUntilNext(days) {
+    if (!days || !days.length) return 99;
+    let min = 99;
+    for (const d of days) {
+      const di = DAY_ORDER.indexOf(d);
+      if (di === -1) continue;
+      const diff = (di - todayIdx + 7) % 7;
+      if (diff < min) min = diff;
+    }
+    return min;
+  }
+  items = items.map(item => ({...item, _catchUp: getCatchUp(item._i)}));
+  items.sort((a, b) => {
+    const aBehind = a._catchUp.length > 0;
+    const bBehind = b._catchUp.length > 0;
+    // Tier 1: behind shows first (sorted by most behind)
+    if (aBehind !== bBehind) return aBehind ? -1 : 1;
+    if (aBehind && bBehind) return b._catchUp.length - a._catchUp.length;
+    // Tier 2: airs today before future shows
+    const aToday = a.days && a.days.includes(todayAirLabel);
+    const bToday = b.days && b.days.includes(todayAirLabel);
+    if (aToday !== bToday) return aToday ? -1 : 1;
+    // Tier 3: soonest next air day
+    return daysUntilNext(a.days) - daysUntilNext(b.days);
+  });
+}
+
+items.forEach(item => {
+  const i = item._i;
+  const catchUp = item._catchUp || (status === 'airing' ? getCatchUp(i) : []);
+  const at = item.days && item.days.includes(todayAirLabel);
+  const behind = catchUp.length > 0;
+
+  let badge = '';
+  if (status === 'airing') {
+    if (behind) badge = `<span class="airing-badge" style="background:rgba(255,123,123,0.2);color:var(--accent4);">${catchUp.length} behind</span>`;
+    else if (at) badge = '<span class="airing-badge live">Airs Today!</span>';
+    else badge = '<span class="airing-badge live">Airing</span>';
+  } else if (status === 'watching') {
+    badge = '<span class="airing-badge" style="background:rgba(109,219,184,0.15);color:var(--accent3);">Watching</span>';
+  } else if (status === 'upcoming') {
+    badge = '<span class="airing-badge" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Upcoming</span>';
+  } else {
+    badge = '<span class="airing-badge backlog">Backlog</span>';
+  }
+
+  const pct = item.totalEp ? Math.round((item.currentEp / item.totalEp) * 100) : null;
+  const fin = item.totalEp && item.currentEp === item.totalEp;
+
+  let meta = '';
+  if (status === 'airing' && item.days && item.days.length) {
+    meta = item.days.map(d => `<span class="day-badge ${d===todayAirLabel?'today':''}">${d}</span>`).join('');
+  }
+  if (status === 'upcoming' && item.premiereDate) {
+    meta = `<span style="color:var(--accent);font-size:11px;">📅 ${item.premiereDate}</span>`;
+  }
+
+  let epControls = '';
+  if (status !== 'upcoming') {
+    epControls = `<div class="ep-controls" onclick="event.stopPropagation()">
+      <button class="ep-btn" onclick="chgTV(${i},-1)">← Ep</button>
+      <span class="ep-display">Ep ${item.currentEp}${item.totalEp?' / '+item.totalEp:''}</span>
+      <button class="ep-btn" onclick="chgTV(${i},1)" style="color:var(--accent3);border-color:rgba(109,219,184,0.3);">Watched ✓</button>
+    </div>`;
+  }
+
+  let catchUpHtml = '';
+  if (behind) {
+    const epBtns = catchUp.map(ep => `<button class="ep-btn" onclick="event.stopPropagation();markWatched(${i},${ep});" style="font-size:11px;padding:3px 9px;border-color:rgba(255,123,123,0.4);color:var(--accent4);">Ep ${ep} ✓</button>`).join('');
+    catchUpHtml = `<div style="margin-top:6px;padding:8px;background:rgba(255,123,123,0.06);border-radius:6px;border:1px solid rgba(255,123,123,0.2);">
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">${epBtns}
+        <button class="ep-btn" onclick="event.stopPropagation();markAllWatched(${i});" style="font-size:11px;padding:3px 9px;color:var(--accent3);border-color:rgba(109,219,184,0.3);">✓ All</button>
+      </div>
+    </div>`;
+  }
+
+  // Red card border for behind shows
+  const cardStyle = behind ? 'border:1px solid rgba(255,123,123,0.4);background:rgba(255,123,123,0.04);' : '';
+
+  html += `<div class="watch-item clickable" onclick="openModal('tv',${i})" style="${cardStyle}">
+    <div class="watch-thumb">${item.emoji}</div>
+    <div class="watch-info">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div class="watch-title">${item.title}</div>
+        ${badge}
+        ${item.with ? `<span class="with-badge">${item.with}</span>` : ''}
+      </div>
+      ${item.sub ? `<div class="watch-meta">${item.sub}</div>` : ''}
+      ${meta ? `<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:3px;">${meta}</div>` : ''}
+      ${pct!==null && status!=='upcoming' ? `<div class="progress-bar" style="margin-top:5px;"><div class="progress-fill${fin?' done-fill':''}" style="width:${pct}%"></div></div>` : ''}
+      ${epControls}
+      ${catchUpHtml}
+    </div>
+  </div>`;
+});
+
+const isOpen = status === 'watching' || status === 'airing';
+tvEl.appendChild(makeCollapse(`tv-${status}`, label, color, items.length, html, isOpen));
+```
+
+});
+
+if (!tvData.length) tvEl.innerHTML = ‘<div style="color:var(--muted);font-size:13px;padding:10px;">No shows yet!</div>’;
+
+renderMediaList(‘movie’);
+renderMediaList(‘game’);
+renderMediaList(‘book’);
+saveAll();
+}
+
+function markWatched(si, ep){
+const s = tvData[si];
+if (!s) return;
+if (!s.watched.includes(ep)) s.watched.push(ep);
+if (!s.airedOn) s.airedOn = {};
+if (!s.airedOn[ep]) s.airedOn[ep] = todayKey();
+_checkAutoRemove(si);
+renderWatchlist(); renderSidebar();
+}
+function markAllWatched(si){
+const s = tvData[si];
+if (!s) return;
+if (!s.airedOn) s.airedOn = {};
+for (let ep = 1; ep <= s.currentEp; ep++) {
+if (!s.watched.includes(ep)) s.watched.push(ep);
+if (!s.airedOn[ep]) s.airedOn[ep] = todayKey();
+}
+_checkAutoRemove(si);
+renderWatchlist(); renderSidebar();
+}
+function _checkAutoRemove(si){
+const s = tvData[si];
+if (!s || !s.totalEp) return;
+// Remove as soon as the final episode itself is marked watched
+if (s.watched.includes(s.totalEp)) tvData.splice(si, 1);
+}
+function chgTV(i, d){
+const s = tvData[i];
+if (!s.airedOn) s.airedOn = {};
+const tk = todayKey();
+if (d === 1) {
+// Mark current ep as watched, stamp its air date
+if (!s.watched.includes(s.currentEp)) s.watched.push(s.currentEp);
+if (!s.airedOn[s.currentEp]) s.airedOn[s.currentEp] = tk;
+// Check if season is done before advancing
+_checkAutoRemove(i);
+if (!tvData[i]) { renderWatchlist(); renderSidebar(); return; } // was removed
+// Advance currentEp forward, skipping any eps that have already aired
+// (so counter lands on the NEXT ep that hasn’t aired yet, or the next unwatched aired ep)
+let next = s.currentEp + 1;
+if (!s.totalEp || next <= s.totalEp) {
+// Keep advancing past any already-watched eps
+while (s.watched.includes(next) && (!s.totalEp || next < s.totalEp)) next++;
+s.currentEp = next;
+}
+} else {
+s.currentEp = Math.max(1, s.currentEp - 1);
+s.watched = s.watched.filter(ep => ep !== s.currentEp);
+delete s.airedOn[s.currentEp];
+}
+renderWatchlist(); renderSidebar();
+}
+// Legacy stubs
+function chgBL(i,d){ chgTV(i,d); }
+function chgAir(i,d){ chgTV(i,d); }
+function rmBL(i){ tvData.splice(i,1); renderWatchlist(); }
+function rmAir(i){ tvData.splice(i,1); renderWatchlist(); renderSidebar(); }
+function togBLEdit(){}
+function togAirEdit(){}
+function saveBLEdit(){}
+function saveAirEdit(){}
+
+// –– IMPORTED SCHEDULE DATA ––
+const importedSchedule = {“calData”: {“2026-03-07”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Chris and Leah visit”, “done”: false}], “2026-03-08”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Scream 7”, “done”: false}], “2026-03-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-03-13”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$???? PAY + BONUS”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-03-15”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 NCAA Selection Sunday”, “done”: false}, {“type”: “event”, “time”: “6:00p”, “text”: “\ud83c\udfc6 98th Academy Awards”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Undertone”, “done”: false}], “2026-03-17”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 FIRST FOUR”, “done”: false}], “2026-03-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 FIRST FOUR”, “done”: false}], “2026-03-19”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 FIRST ROUND”, “done”: false}], “2026-03-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 Paddy Flea Meds”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 FIRST ROUND”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Project Hail Mary”, “done”: false}], “2026-03-21”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 SECOND ROUND”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Ready or Not 2: Here I Come”, “done”: false}], “2026-03-22”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc0 SECOND ROUND”, “done”: false}], “2026-03-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1600 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 Take Paddy to Knoxville”, “done”: false}], “2026-03-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac They Will Kill You”, “done”: false}], “2026-03-28”: [{“type”: “event”, “time”: “5:30a”, “text”: “\u2708\ufe0f DSM to Denver”, “done”: false}, {“type”: “event”, “time”: “7:45a”, “text”: “\u2708\ufe0f DEN to SEA”, “done”: false}, {“type”: “event”, “time”: “10:00a”, “text”: “\ud83d\ude99 Rental Car pickup”, “done”: false}, {“type”: “event”, “time”: “4:00p”, “text”: “\ud83c\udfe8 Hotel 5 Check-In \u2014 Seattle Day 1”, “done”: false}], “2026-03-29”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf06 Seattle Day 2: Space Needle, Capitol Hill, Aquarium, Ferris Wheel”, “done”: false}], “2026-03-30”: [{“type”: “event”, “time”: “8:00a”, “text”: “\ud83c\udfe8 Hotel 5 Check-out”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\ude99 Drive to Treehouse Point”, “done”: false}, {“type”: “event”, “time”: “4:00p”, “text”: “\ud83c\udf32 Treehouse Point Check-in”, “done”: false}], “2026-03-31”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Super Mario Galaxy Movie”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf32 Treehouse Point \u2014 Hike”, “done”: false}], “2026-04-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$700 RENT”, “done”: false}, {“type”: “event”, “time”: “11:00a”, “text”: “\ud83c\udf32 Treehouse Point Check-out”, “done”: false}, {“type”: “event”, “time”: “4:00p”, “text”: “\ud83c\udfe8 Lake Quinault Lodge Check-in”, “done”: false}], “2026-04-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 PADDY HEARTGARD”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf32 Lake Quinault Lodge \u2014 Hike / Forks”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Drama”, “done”: false}], “2026-04-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 KENNEDY 29!”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Good Friday”, “done”: false}, {“type”: “event”, “time”: “11:00a”, “text”: “\ud83c\udfe8 Lake Quinault Lodge Check-out”, “done”: false}], “2026-04-04”: [{“type”: “event”, “time”: “12:00p”, “text”: “\ud83d\ude99 Return rental car”, “done”: false}, {“type”: “event”, “time”: “3:48p”, “text”: “\u2708\ufe0f SEA to DEN”, “done”: false}, {“type”: “event”, “time”: “8:45p”, “text”: “\u2708\ufe0f DEN to DSM”, “done”: false}], “2026-04-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 Pick up Padfoot”, “done”: false}], “2026-04-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-04-11”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Clara dance - Coralville”, “done”: false}], “2026-04-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-04-13”: [{“type”: “event”, “time”: “8:30p”, “text”: “\ud83e\udd13 CinemaCon - Sony”, “done”: false}], “2026-04-14”: [{“type”: “event”, “time”: “6:30p”, “text”: “\ud83e\udd13 CinemaCon - WB”, “done”: false}], “2026-04-15”: [{“type”: “event”, “time”: “6:00p”, “text”: “\ud83e\udd13 CinemaCon - Universal”, “done”: false}, {“type”: “event”, “time”: “10:30p”, “text”: “\ud83e\udd13 CinemaCon - Amazon MGM”, “done”: false}], “2026-04-16”: [{“type”: “event”, “time”: “11:45a”, “text”: “\ud83e\udd13 CinemaCon - Paramount”, “done”: false}, {“type”: “event”, “time”: “4:30p”, “text”: “\ud83e\udd13 CinemaCon - Disney”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Lee Cronin’s The Mummy”, “done”: false}], “2026-04-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 Paddy Flea Meds”, “done”: false}], “2026-04-23”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Michael (in theaters)”, “done”: false}], “2026-04-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-04-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Clara dance - Adventureland”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udc6f Kelsey visits”, “done”: false}], “2026-04-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 MOM 61!”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Devil Wears Prada 2”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Hokum”, “done”: false}], “2026-05-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$700 RENT”, “done”: false}], “2026-05-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 PADDY HEARTGARD”, “done”: false}], “2026-05-07”: [{“type”: “event”, “time”: “1:00p”, “text”: “\ud83e\uddb7 Dentist”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Mortal Kombat 2”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf7b Danny Bachelor Party - Ozarks”, “done”: false}], “2026-05-08”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf7b Danny Bachelor Party - Ozarks”, “done”: false}], “2026-05-09”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf7b Danny Bachelor Party - Ozarks”, “done”: false}], “2026-05-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf7b Danny Bachelor Party - Ozarks”, “done”: false}], “2026-05-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-05-21”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Mandalorian & Grogu”, “done”: false}], “2026-05-22”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1600 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-05-23”: [{“type”: “event”, “time”: “6:00p”, “text”: “\ud83d\udc92 Danny & Sarah Rehearsal”, “done”: false}], “2026-05-24”: [{“type”: “event”, “time”: “4:00p”, “text”: “\ud83d\udc92 Danny & Sarah Ceremony”, “done”: false}, {“type”: “event”, “time”: “4:30p”, “text”: “\ud83d\udc92 Cocktail Hour”, “done”: false}, {“type”: “event”, “time”: “5:30p”, “text”: “\ud83d\udc92 Reception”, “done”: false}], “2026-05-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udee1 Memorial Day”, “done”: false}], “2026-05-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 DAD 62! COADY 37! CHRIS !”, “done”: false}], “2026-05-28”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 R&K Decorah with the Walls”, “done”: false}], “2026-05-29”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 R&K Decorah with the Walls”, “done”: false}], “2026-05-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 R&K Decorah with the Walls”, “done”: false}], “2026-05-31”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 R&K Decorah with the Walls”, “done”: false}], “2026-06-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 PADDY HEARTGARD”, “done”: false}], “2026-06-04”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Masters of the Universe”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Scary Movie 6”, “done”: false}], “2026-06-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1600 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-06-11”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Disclosure Day”, “done”: false}], “2026-06-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-06-19”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1600 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Juneteenth”, “done”: false}], “2026-06-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Toy Story 5”, “done”: false}], “2026-06-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 JACKSON 18!”, “done”: false}], “2026-06-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Supergirl”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Jackass 5”, “done”: false}], “2026-07-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 PADDY HEARTGARD”, “done”: false}], “2026-07-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 OWEN 1!”, “done”: false}], “2026-07-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\uddfa\ud83c\uddf8 July 4th Weekend”, “done”: false}], “2026-07-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Fantastic Four: First Steps”, “done”: false}], “2026-07-17”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-07-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Odyssey”, “done”: false}], “2026-07-09”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Moana 2”, “done”: false}], “2026-07-22”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC”, “done”: false}], “2026-07-23”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Evil Dead Burn”, “done”: false}], “2026-07-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC”, “done”: false}], “2026-07-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC”, “done”: false}], “2026-07-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC”, “done”: false}], “2026-07-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Spider-Man: Brand New Day”, “done”: false}], “2026-07-31”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udc36 PADDY HEARTGARD”, “done”: false}], “2026-08-08”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc1 360 Nationals”, “done”: false}], “2026-08-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc1 Nationals”, “done”: false}], “2026-08-13”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc1 Nationals”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Flowervale Street”, “done”: false}], “2026-08-14”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc1 Nationals”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 D23 Expo”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}], “2026-08-15”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc1 Nationals”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 D23 Expo”, “done”: false}], “2026-08-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 D23 Expo”, “done”: false}], “2026-08-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Thread: An Insidious Tale”, “done”: false}], “2026-08-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac COYOTE VS ACME”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Dog Stars”, “done”: false}], “2026-08-28”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson vs Centerville”, “done”: false}], “2026-09-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac How To Rob A Bank”, “done”: false}], “2026-09-04”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson @ Mt Pleasant”, “done”: false}], “2026-09-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Northern Illinois”, “done”: false}], “2026-09-07”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Labor Day”, “done”: false}], “2026-09-11”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson vs Albia”, “done”: false}], “2026-09-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Iowa State”, “done”: false}], “2026-09-17”: [{“type”: “event”, “time”: “”, “text”: “\u2764\ufe0f 4 YEARS”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Resident Evil”, “done”: false}], “2026-09-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson @ Fairfield”, “done”: false}], “2026-09-19”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Northern Iowa”, “done”: false}], “2026-09-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson vs Saydel”, “done”: false}], “2026-09-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa @ Michigan”, “done”: false}], “2026-09-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 33!”, “done”: false}], “2026-09-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Avengers: Endgame re-release”, “done”: false}], “2026-09-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Suicide Squad”, “done”: false}], “2026-10-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Digger”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Verity”, “done”: false}], “2026-10-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson vs Winterset”, “done”: false}], “2026-10-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Ohio State”, “done”: false}], “2026-10-08”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Legend of Aang: The Last Airbender”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Social Reckoning”, “done”: false}], “2026-10-09”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson @ DSM Christian”, “done”: false}], “2026-10-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa @ Washington”, “done”: false}], “2026-10-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 ERIN 49!”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-10-15”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Street Fighter”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Whalefall”, “done”: false}], “2026-10-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson vs Williamsburg”, “done”: false}], “2026-10-17”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}], “2026-10-18”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}], “2026-10-19”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}], “2026-10-20”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}], “2026-10-21”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}], “2026-10-22”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Remain”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Clayface”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Wildwood”, “done”: false}], “2026-10-23”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Jackson @ Nevada”, “done”: false}], “2026-10-24”: [{“type”: “event”, “time”: “”, “text”: “\u2708\ufe0f K - Anna Marie trip w/ the girls”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa @ Minnesota”, “done”: false}], “2026-10-31”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Wisconsin”, “done”: false}], “2026-11-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Superman”, “done”: false}], “2026-11-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Godzilla Minus Zero”, “done”: false}], “2026-11-06”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}], “2026-11-07”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa @ Northwestern”, “done”: false}], “2026-11-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Great Beyond”, “done”: false}], “2026-11-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Supergirl (R&K)”, “done”: false}], “2026-11-14”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Purdue”, “done”: false}], “2026-11-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-11-19”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Hunger Games: Sunrise on the Reaping”, “done”: false}], “2026-11-21”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa @ Illinois”, “done”: false}], “2026-11-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Hexed”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Focker In-Law”, “done”: false}], “2026-11-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Narnia”, “done”: false}], “2026-11-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd83 Thanksgiving”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Madden”, “done”: false}], “2026-11-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Black Friday”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfc8 Iowa vs Nebraska”, “done”: false}], “2026-12-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 CCXP”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Violent Night 2”, “done”: false}], “2026-12-04”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 CCXP”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-12-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 CCXP”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Clayface (theaters)”, “done”: false}], “2026-12-06”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 CCXP”, “done”: false}], “2026-12-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Jumanji 4”, “done”: false}], “2026-12-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 -$800 STUDENT LOAN”, “done”: false}], “2026-12-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Tennessee Wall Christmas”, “done”: false}], “2026-12-17”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Tennessee Wall Christmas”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Avengers: Doomsday”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Dune: Messiah”, “done”: false}], “2026-12-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Tennessee Wall Christmas”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 +$1900 PAY”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83d\udcb0 Savings transfer 2%”, “done”: false}], “2026-12-19”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Tennessee Wall Christmas”, “done”: false}], “2026-12-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83d\udc65 Tennessee Wall Christmas”, “done”: false}], “2026-12-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf84 Christmas Eve”, “done”: false}], “2026-12-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf84 Christmas”, “done”: false}], “2027-01-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a New Year’s Day”, “done”: false}], “2027-01-06”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 CLARA 14!”, “done”: false}], “2027-01-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a MLK Jr. Day”, “done”: false}], “2027-03-11”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Exorcist”, “done”: false}], “2027-03-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Legend of Zelda (game release)”, “done”: false}], “2027-04-01”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Star Wars Celebration”, “done”: false}], “2027-04-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Star Wars Celebration”, “done”: false}], “2027-04-03”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Star Wars Celebration”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 KENNEDY 30!”, “done”: false}], “2027-04-04”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Star Wars Celebration”, “done”: false}], “2027-04-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 MOM 62!”, “done”: false}], “2027-05-20”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Paranormal Activity 8”, “done”: false}], “2027-05-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udee1 Memorial Day”, “done”: false}], “2027-05-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 DAD 63! COADY 38! CHRIS !”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Star Wars: Starfighter (game)”, “done”: false}], “2027-06-17”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Spider-Man: Beyond the Spider-Verse”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Gatto”, “done”: false}], “2027-06-26”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 JACKSON 19!”, “done”: false}], “2027-06-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Shrek 5”, “done”: false}], “2027-07-02”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 OWEN 2!”, “done”: false}], “2027-07-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\uddfa\ud83c\uddf8 July 4th”, “done”: false}], “2027-07-08”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Man of Tomorrow”, “done”: false}], “2027-07-22”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Simpsons Movie 2”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac A Minecraft Movie 2”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83e\udd13 SDCC?”, “done”: false}], “2027-07-29”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac A Quiet Place 3”, “done”: false}], “2027-08-05”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Miami Vice”, “done”: false}], “2027-08-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Shiver”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac TMNT: Mutant Mayhem 2”, “done”: false}], “2027-09-06”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf8a Labor Day”, “done”: false}], “2027-09-17”: [{“type”: “event”, “time”: “”, “text”: “\u2764\ufe0f 5 YEARS”, “done”: false}], “2027-09-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 34!”, “done”: false}], “2027-09-30”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Batman: Part II”, “done”: false}], “2027-10-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 ERIN 50!”, “done”: false}], “2027-11-10”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Helldivers”, “done”: false}], “2027-11-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Untitled The Daniels Movie”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Gremlins 3”, “done”: false}], “2027-11-25”: [{“type”: “event”, “time”: “”, “text”: “\ud83e\udd83 Thanksgiving”, “done”: false}], “2027-12-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Avengers: Secret Wars”, “done”: false}, {“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Lord of the Rings: The Hunt for Gollum”, “done”: false}], “2027-12-24”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf84 Christmas Eve”, “done”: false}], “2027-12-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf84 Christmas”, “done”: false}], “2028-03-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Fast Forever”, “done”: false}], “2028-05-18”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac The Mummy 4”, “done”: false}], “2028-11-16”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udfac Live-Action TMNT”, “done”: false}], “2028-09-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 35!”, “done”: false}], “2028-10-12”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 ERIN 51!”, “done”: false}], “2029-09-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 36!”, “done”: false}], “2030-09-27”: [{“type”: “event”, “time”: “”, “text”: “\ud83c\udf82 37!”, “done”: false}]}, “movieData”: [{“title”: “Scream 7”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/8/2026”}, {“title”: “Undertone”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/15/2026”}, {“title”: “Project Hail Mary”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/20/2026”}, {“title”: “Ready or Not 2: Here I Come”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/21/2026”}, {“title”: “They Will Kill You”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/26/2026”}, {“title”: “The Super Mario Galaxy Movie”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/31/2026”}, {“title”: “The Drama”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “4/2/2026”}, {“title”: “Lee Cronin’s The Mummy”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “4/16/2026”}, {“title”: “The Devil Wears Prada 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “4/30/2026”}, {“title”: “Hokum”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “4/30/2026”}, {“title”: “Mortal Kombat 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “5/7/2026”}, {“title”: “The Mandalorian & Grogu”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “5/21/2026”}, {“title”: “Masters of the Universe”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/4/2026”}, {“title”: “Scary Movie 6”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/4/2026”}, {“title”: “Disclosure Day”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/11/2026”}, {“title”: “Toy Story 5”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/18/2026”}, {“title”: “Supergirl”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/25/2026”}, {“title”: “Jackass 5”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/25/2026”}, {“title”: “Fantastic Four: First Steps”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/12/2026”}, {“title”: “The Odyssey”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/16/2026”}, {“title”: “Moana 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/9/2026”}, {“title”: “Evil Dead Burn”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/23/2026”}, {“title”: “Spider-Man: Brand New Day”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/30/2026”}, {“title”: “Flowervale Street”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/13/2026”}, {“title”: “Thread: An Insidious Tale”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/20/2026”}, {“title”: “COYOTE VS ACME”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/27/2026”}, {“title”: “The Dog Stars”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/27/2026”}, {“title”: “How To Rob A Bank”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “9/3/2026”}, {“title”: “Resident Evil”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “9/17/2026”}, {“title”: “Avengers: Endgame re-release”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “9/24/2026”}, {“title”: “The Suicide Squad”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “9/30/2026”}, {“title”: “Digger”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/1/2026”}, {“title”: “Verity”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/1/2026”}, {“title”: “The Legend of Aang: The Last Airbender”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/8/2026”}, {“title”: “The Social Reckoning”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/8/2026”}, {“title”: “Street Fighter”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/15/2026”}, {“title”: “Whalefall”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/15/2026”}, {“title”: “Remain”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/22/2026”}, {“title”: “Clayface”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/22/2026”}, {“title”: “Wildwood”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “10/22/2026”}, {“title”: “Superman”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/1/2026”}, {“title”: “Godzilla Minus Zero”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/5/2026”}, {“title”: “The Great Beyond”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/12/2026”}, {“title”: “Supergirl (R&K)”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/10/2026”}, {“title”: “The Hunger Games: Sunrise on the Reaping”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/19/2026”}, {“title”: “Hexed”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/24/2026”}, {“title”: “Focker In-Law”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/24/2026”}, {“title”: “Narnia”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/25/2026”}, {“title”: “Madden”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/26/2026”}, {“title”: “Violent Night 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/3/2026”}, {“title”: “Clayface (theaters)”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/5/2026”}, {“title”: “Jumanji 4”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/10/2026”}, {“title”: “Avengers: Doomsday”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/17/2026”}, {“title”: “Dune: Messiah”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/17/2026”}, {“title”: “The Exorcist”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/11/2027”}, {“title”: “Paranormal Activity 8”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “5/20/2027”}, {“title”: “Spider-Man: Beyond the Spider-Verse”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/17/2027”}, {“title”: “Gatto”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/17/2027”}, {“title”: “Shrek 5”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “6/30/2027”}, {“title”: “Man of Tomorrow”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/8/2027”}, {“title”: “The Simpsons Movie 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/22/2027”}, {“title”: “A Minecraft Movie 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/22/2027”}, {“title”: “A Quiet Place 3”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “7/29/2027”}, {“title”: “Miami Vice”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/5/2027”}, {“title”: “Shiver”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/12/2027”}, {“title”: “TMNT: Mutant Mayhem 2”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “8/12/2027”}, {“title”: “The Batman: Part II”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “9/30/2027”}, {“title”: “Helldivers”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/10/2027”}, {“title”: “Untitled The Daniels Movie”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/18/2027”}, {“title”: “Gremlins 3”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/18/2027”}, {“title”: “Avengers: Secret Wars”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/16/2027”}, {“title”: “The Lord of the Rings: The Hunt for Gollum”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “12/16/2027”}, {“title”: “Fast Forever”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “3/16/2028”}, {“title”: “The Mummy 4”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “5/18/2028”}, {“title”: “Live-Action TMNT”, “emoji”: “\ud83c\udfac”, “status”: “upcoming”, “release”: “11/16/2028”}]};
+
+// Merge imported data into calEvents on load
+function mergeImportedSchedule() {
+Object.entries(importedSchedule.calData).forEach(([key, entries]) => {
+if (!calData[key]) calData[key] = [];
+entries.forEach(e => {
+if (!calData[key].some(x => x.text === e.text)) calData[key].push(e);
+});
+});
+movieData.length = 0;
+importedSchedule.movieData.forEach(m => movieData.push(m));
+
+// Stamp airedOn for airing shows: walk back from today and fill in missing air dates
+// based on their weekly schedule, so episodes without stamps get detected as behind.
+const tk = todayKey();
+tvData.forEach(s => {
+if (s.status !== ‘airing’ || !s.days || !s.days.length) return;
+if (!s.airedOn) s.airedOn = {};
+const DAY_MAP = {‘S’:0,‘M’:1,‘T’:2,‘W’:3,‘Th’:4,‘F’:5,‘Sa’:6};
+const airDays = s.days.map(d => DAY_MAP[d]).filter(d => d !== undefined);
+if (!airDays.length) return;
+// Count how many eps should have aired by today based on schedule
+// Walk back up to 90 days to find air dates for unrecorded eps
+let epCursor = 1;
+const startDate = new Date(); startDate.setDate(startDate.getDate() - 90);
+for (let d = new Date(startDate); d <= new Date(); d.setDate(d.getDate() + 1)) {
+if (!airDays.includes(d.getDay())) continue;
+if (epCursor > s.currentEp) break;
+const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+if (!s.airedOn[epCursor]) s.airedOn[epCursor] = key;
+epCursor++;
+}
+});
+}
+
+// –– TODOS ––
+let todos=[];
+function renderTodos(){
+const el=document.getElementById(‘todoList’);if(!el)return;el.innerHTML=’’;
+if(!todos.length){el.innerHTML=’<div style="color:var(--muted);font-size:13px;padding:12px;">No tasks yet!</div>’;return;}
+todos.forEach((t,i)=>{
+const row=document.createElement(‘div’);row.className=‘todo-item’+(t.done?’ done-todo’:’’);
+row.innerHTML=`<div class="todo-check" onclick="toggleTodo(${i})">${t.done?'✓':''}</div><div class="todo-label">${t.text}</div><button class="todo-del" onclick="deleteTodo(${i})">✕</button>`;
+el.appendChild(row);
+});
+saveAll();
+}
+function addTodo(){const v=document.getElementById(‘todoInput’).value.trim();if(!v)return;todos.push({text:v,done:false});document.getElementById(‘todoInput’).value=’’;renderTodos();renderSidebar();}
+function quickAddTodo(){const v=document.getElementById(‘sidebarTodoInput’).value.trim();if(!v)return;todos.push({text:v,done:false});document.getElementById(‘sidebarTodoInput’).value=’’;renderTodos();renderSidebar();}
+function toggleTodo(i){todos[i].done=!todos[i].done;renderTodos();renderSidebar();}
+function deleteTodo(i){todos.splice(i,1);renderTodos();renderSidebar();}
+
+// –– CALENDAR ––
+let calData = {
+“2026-03-07”:[{type:“event”,time:””,text:“👥 Chris and Leah visit”}],
+“2026-03-08”:[{type:“event”,time:“10:25a”,text:“🎬 Scream 7”}],
+“2026-03-12”:[{type:“event”,time:””,text:“💰 -$800 (Student Loan)”}],
+“2026-03-13”:[{type:“event”,time:””,text:“💰 +$???? (Pay + Bonus)”},{type:“task”,time:””,text:“💰 Savings transfer — 2% of paycheck”,done:false}],
+“2026-03-14”:[{type:“event”,time:””,text:“🎬 Movie??”}],
+“2026-03-15”:[{type:“event”,time:“10:00a”,text:“🎬 Undertone”},{type:“event”,time:””,text:“🏀 Selection Sunday”},{type:“event”,time:“6:00p”,text:“🏆 98th Academy Awards”}],
+“2026-03-17”:[{type:“event”,time:””,text:“🏀 NCAA First Four”}],
+“2026-03-18”:[{type:“event”,time:””,text:“🏀 NCAA First Four”}],
+“2026-03-19”:[{type:“event”,time:””,text:“🏀 NCAA First Round”}],
+“2026-03-20”:[{type:“task”,time:””,text:“🐶 Paddy flea meds”,done:false},{type:“event”,time:””,text:“🏀 NCAA First Round”},{type:“event”,time:“7:00p”,text:“🎬 Project Hail Mary”}],
+“2026-03-21”:[{type:“event”,time:“9:30a”,text:“🎬 Ready or Not 2: Here I Come”},{type:“event”,time:””,text:“🏀 NCAA Second Round”}],
+“2026-03-22”:[{type:“event”,time:””,text:“🎬 Movie??”},{type:“event”,time:””,text:“🏀 NCAA Second Round”}],
+“2026-03-26”:[{type:“event”,time:””,text:“🎬 They Will Kill You”}],
+“2026-03-27”:[{type:“event”,time:””,text:“💰 +$1600 (Pay)”},{type:“task”,time:””,text:“💰 Savings transfer — 2% of paycheck”,done:false},{type:“task”,time:””,text:“🐶 Take Paddy to Knoxville”,done:false}],
+“2026-03-28”:[{type:“event”,time:“5:30a”,text:“✈️ Depart → Denver”},{type:“event”,time:“7:45a”,text:“✈️ DEN → SEA”},{type:“event”,time:“10:00a”,text:“🚙 Rental car pickup”},{type:“task”,time:””,text:“🧳 Store luggage at hotel?”,done:false},{type:“event”,time:“4:00p”,text:“🏨 Hotel 5 check-in”},{type:“event”,time:””,text:“🌆 Seattle Day 1”}],
+“2026-03-29”:[{type:“event”,time:””,text:“🌆 Seattle Day 2”},{type:“event”,time:””,text:“🚶 Space Needle (12 min walk)”},{type:“event”,time:””,text:“🚶 Capitol Hill (15 min walk)”},{type:“event”,time:””,text:“🚶 Paramount Theater (15 min walk)”},{type:“event”,time:””,text:“🚶 Aquarium (17 min walk)”},{type:“event”,time:””,text:“🎡 Ferris Wheel (20 min walk)”},{type:“event”,time:””,text:“🚗 Stadium”},{type:“event”,time:””,text:“🛍️ Pacific Place Mall”},{type:“event”,time:””,text:“🏛️ Convention Center”},{type:“event”,time:””,text:“🏮 Chinatown Gate”}],
+“2026-03-30”:[{type:“event”,time:“8:00a”,text:“🏨 Hotel 5 check-out”},{type:“event”,time:””,text:“🚙 Drive to Skagit (1h 17m)”},{type:“event”,time:””,text:“🚙 Drive to Treehouse Point (1h 50m)”},{type:“event”,time:“4:00p”,text:“🌲 Treehouse Point check-in”}],
+“2026-03-31”:[{type:“event”,time:””,text:“🌲 Treehouse Point”},{type:“event”,time:””,text:“🥾 Hike”},{type:“event”,time:””,text:“😌 Lounge”},{type:“event”,time:””,text:“🎬 The Super Mario Galaxy Movie”}],
+};let calView=‘month’, calYear=_now.getFullYear(), calMonth=_now.getMonth(), calSelDate=todayKey();
+
+function calNav(delta){
+if(calView===‘year’){calYear+=delta;}
+else if(calView===‘month’){calMonth+=delta;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear–;}}
+else if(calView===‘day’){const[y,m,d]=calSelDate.split(’-’).map(Number);const nd=new Date(y,m-1,d+delta);calSelDate=fmtKey(nd.getFullYear(),nd.getMonth(),nd.getDate());calYear=nd.getFullYear();calMonth=nd.getMonth();}
+renderCalendar();
+}
+function calDrillUp(){
+if(calView===‘month’)calView=‘year’;
+else if(calView===‘day’)calView=‘month’;
+renderCalendar();
+}
+function monthHasEntries(y,m){
+// Check manual calData
+if(Object.keys(calData).some(k=>{const[ky,km]=k.split(’-’).map(Number);return ky===y&&km===m+1;})) return true;
+// Check if any airing show has a day that falls in this month
+if(!tvData.filter(s=>s.status===‘airing’).length) return false;
+const dim=new Date(y,m+1,0).getDate();
+for(let d=1;d<=dim;d++){
+const key=fmtKey(y,m,d);
+if(getAiringEntries(key).length) return true;
+}
+return false;
+}
+
+function renderCalendar(){
+const grid=document.getElementById(‘calGrid’);
+const dayCard=document.getElementById(‘calDayCard’);
+const prevBtn=document.getElementById(‘calPrevBtn’);
+const nextBtn=document.getElementById(‘calNextBtn’);
+const vLabel=document.getElementById(‘calViewLabel’);
+const bc=document.getElementById(‘calBreadcrumb’);
+if(!grid)return;
+grid.innerHTML=’’;
+
+// breadcrumb
+if(calView===‘year’){bc.innerHTML=`<span class="cal-crumb">${calYear}</span>`;}
+else if(calView===‘month’){bc.innerHTML=`<span class="cal-crumb" onclick="calView='year';renderCalendar()">${calYear}</span><span class="cal-crumb-sep">›</span><span class="cal-crumb">${MONTHS[calMonth]}</span>`;}
+else{const[y,m,d]=calSelDate.split(’-’).map(Number);bc.innerHTML=`<span class="cal-crumb" onclick="calView='year';renderCalendar()">${calYear}</span><span class="cal-crumb-sep">›</span><span class="cal-crumb" onclick="calView='month';renderCalendar()">${MONTHS[calMonth]}</span><span class="cal-crumb-sep">›</span><span class="cal-crumb">${d}</span>`;}
+
+prevBtn.onclick=()=>calNav(-1); nextBtn.onclick=()=>calNav(1);
+
+if(calView===‘year’){
+vLabel.textContent=calYear; vLabel.title=‘Click to go up’;
+dayCard.style.display=‘none’;
+const g=document.createElement(‘div’);g.className=‘cal-year-grid’;
+MONTHS.forEach((name,mi)=>{
+const btn=document.createElement(‘div’);btn.className=‘cal-month-btn’;
+if(calYear===_now.getFullYear()&&mi===_now.getMonth())btn.classList.add(‘current-month’);
+if(monthHasEntries(calYear,mi))btn.classList.add(‘has-entries’);
+btn.textContent=MONTHS_S[mi];
+btn.addEventListener(‘click’,()=>{calMonth=mi;calView=‘month’;renderCalendar();});
+g.appendChild(btn);
+});
+grid.appendChild(g);
+
+} else if(calView===‘month’){
+vLabel.textContent=`${MONTHS[calMonth]} ${calYear}`; vLabel.title=‘Click for year view’;
+dayCard.style.display=‘none’;
+const g=document.createElement(‘div’);g.className=‘cal-day-grid’;
+DAYS_S.forEach(d=>{const h=document.createElement(‘div’);h.className=‘cal-day-header’;h.textContent=d;g.appendChild(h);});
+const first=new Date(calYear,calMonth,1).getDay();
+const dim=new Date(calYear,calMonth+1,0).getDate();
+const tk=todayKey();
+for(let i=0;i<first;i++){const b=document.createElement(‘div’);b.className=‘cal-day’;g.appendChild(b);}
+for(let d=1;d<=dim;d++){
+const key=fmtKey(calYear,calMonth,d);
+const entries=getAllEntries(key);
+const cell=document.createElement(‘div’);cell.className=‘cal-day in-month’;
+if(key===tk)cell.classList.add(‘today-cell’);
+if(key===calSelDate)cell.classList.add(‘selected-cell’);
+const num=document.createElement(‘div’);num.textContent=d;cell.appendChild(num);
+if(entries.length){
+const dots=document.createElement(‘div’);dots.className=‘cal-dot-row’;
+const seen=new Set();
+entries.forEach(e=>{
+let color;
+if(e.type===‘task’) color=‘var(–accent3)’;
+else if(e.type===‘airing’) color=‘var(–accent4)’;
+else if(/🎬/.test(e.text)) color=’#c084fc’;
+else if(/💰/.test(e.text)) color=‘var(–accent)’;
+else if(/🏀|🏆|🏈|⚽|🎾|🏒/.test(e.text)) color=’#fb923c’;
+else if(/✈️|🚙|🏨|🌲|🚶|🎡|🛍️|🏛️|🏮|🌆/.test(e.text)) color=’#34d399’;
+else if(/👥/.test(e.text)) color=’#f472b6’;
+else color=‘var(–accent2)’;
+if(!seen.has(color)){seen.add(color);const dot=document.createElement(‘div’);dot.className=‘cal-dot’;dot.style.background=color;dots.appendChild(dot);}
+});
+cell.appendChild(dots);
+}
+cell.addEventListener(‘click’,()=>{calSelDate=key;calView=‘day’;renderCalendar();});
+g.appendChild(cell);
+}
+grid.appendChild(g);
+
+} else if(calView===‘day’){
+const[y,m,d]=calSelDate.split(’-’).map(Number);
+const dateObj=new Date(y,m-1,d);
+vLabel.textContent=`${DAYS_S[dateObj.getDay()]}, ${MONTHS_S[m-1]} ${d}`; vLabel.title=‘Click for month view’;
+dayCard.style.display=‘block’;
+document.getElementById(‘calDayLabel’).textContent=`${DAYS_FULL[dateObj.getDay()]}, ${MONTHS[m-1]} ${d}, ${y}`;
+renderCalDay();
+}
+}
+
+// Airing shows are tracked in the Entertainment tab, not on the calendar
+function getAiringEntries(key) { return []; }
+
+// Combined entries for a key (calData + airing shows)
+function getAllEntries(key) {
+return […(calData[key] || []), …getAiringEntries(key)];
+}
+
+function renderCalDay(){
+const c=document.getElementById(‘calDayEntries’);if(!c)return;c.innerHTML=’’;
+const airingEntries=getAiringEntries(calSelDate);
+const manualEntries=calData[calSelDate]||[];
+const all=[…airingEntries,…manualEntries];
+if(!all.length){c.innerHTML=’<div class="cal-empty">Nothing here yet — add an event or task above.</div>’;return;}
+airingEntries.forEach(entry=>{
+const el=document.createElement(‘div’);
+el.className=‘cal-entry event’;
+el.style.borderColor=‘var(–accent4)’;
+el.innerHTML=`<div class="cal-entry-icon">📺</div><div class="cal-entry-body"><div class="cal-entry-text">${entry.text}</div></div>`;
+c.appendChild(el);
+});
+manualEntries.forEach((entry,i)=>{
+const el=document.createElement(‘div’);el.className=`cal-entry ${entry.type}${entry.done?' done-cal':''}`;
+el.innerHTML=`<div class="cal-entry-icon">${entry.type==='event'?'📅':'✅'}</div><div class="cal-entry-body">${entry.time?`<div class="cal-entry-time">${entry.time}</div>`:''}<div class="cal-entry-text">${entry.text}</div></div>${entry.type==='task'?`<button class="ep-btn" onclick="togCalTask('${calSelDate}',${i})" style="font-size:11px;padding:3px 8px;">${entry.done?‘Undo’:‘Done’}</button>`:''}<button class="todo-del" onclick="delCalEntry('${calSelDate}',${i})">✕</button>`;
+c.appendChild(el);
+});
+}
+function toggleCalForm(){const f=document.getElementById(‘calAddForm’);f.style.display=f.style.display===‘none’?‘block’:‘none’;}
+function saveCalEntry(){
+const text=document.getElementById(‘calEntryText’).value.trim();if(!text)return;
+const type=document.getElementById(‘calEntryType’).value;
+const time=document.getElementById(‘calEntryTime’).value.trim();
+if(!calData[calSelDate])calData[calSelDate]=[];
+calData[calSelDate].push({type,time,text,done:false});
+calData[calSelDate].sort((a,b)=>{if(!a.time&&!b.time)return 0;if(!a.time)return 1;if(!b.time)return -1;return a.time.localeCompare(b.time);});
+document.getElementById(‘calEntryText’).value=’’;document.getElementById(‘calEntryTime’).value=’’;
+document.getElementById(‘calAddForm’).style.display=‘none’;
+// Track user-added entry
+if (!_userCalData[calSelDate]) _userCalData[calSelDate]=[];
+_userCalData[calSelDate].push(calData[calSelDate][calData[calSelDate].length-1]);
+saveAll();
+renderCalendar();
+}
+function togCalTask(key,i){calData[key][i].done=!calData[key][i].done;renderCalDay();}
+function delCalEntry(key,i){
+calData[key].splice(i,1);
+if(!calData[key]||!calData[key].length) delete calData[key];
+// Keep userCalData in sync (only non-imported entries)
+const imported = (importedSchedule.calData[key]||[]);
+_userCalData[key] = (calData[key]||[]).filter(e=>!imported.some(x=>x.text===e.text));
+if(!_userCalData[key].length) delete _userCalData[key];
+saveAll();
+renderCalendar();
+}
+
+// –– SIDEBAR ––
+function renderSidebar(){
+// Airing today — with episode number
+const aEl=document.getElementById(‘sidebarAiring’);
+if(aEl){
+aEl.innerHTML=’’;
+const shows=tvData.filter(s=>s.status===‘airing’&&s.days&&s.days.includes(todayAirLabel));
+if(!shows.length){aEl.innerHTML=’<div class="sidebar-empty">Nothing airing today.</div>’;}
+shows.forEach(s=>{
+const epLabel = s.totalEp ? `Ep ${s.currentEp} / ${s.totalEp}` : `Ep ${s.currentEp}`;
+const el=document.createElement(‘div’);el.className=‘sidebar-airing’;
+el.innerHTML=`<span style="font-size:14px;">${s.emoji}</span><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">${s.sub ? s.sub+' · ' : ''}${epLabel}</div></div><span class="sidebar-airing-badge">Today</span>`;
+aEl.appendChild(el);
+});
+}
+
+// Watching — current episode + progress
+const bEl=document.getElementById(‘sidebarBacklog’);
+if(bEl){
+bEl.innerHTML=’’;
+const watching = tvData.filter(s=>s.status===‘watching’);
+if(!watching.length){bEl.innerHTML=’<div class="sidebar-empty">Nothing currently watching.</div>’;}
+watching.forEach(item=>{
+const pct = item.totalEp ? Math.round((item.currentEp/item.totalEp)*100) : null;
+const onFinal = item.totalEp && item.currentEp===item.totalEp;
+const epLabel = item.totalEp ? `Ep ${item.currentEp} / ${item.totalEp}` : `Ep ${item.currentEp}`;
+const el=document.createElement(‘div’);el.className=‘sidebar-airing’;el.style.flexDirection=‘column’;el.style.alignItems=‘flex-start’;el.style.gap=‘5px’;
+el.innerHTML=`<div style="display:flex;align-items:center;gap:8px;width:100%;"><span style="font-size:14px;">${item.emoji}</span><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</div><div style="font-size:10px;color:var(--muted);margin-top:1px;">${item.sub ? item.sub+' · ' : ''}${epLabel}${onFinal?' · <span style="color:var(--accent3)">Final ep!</span>':''}</div></div></div>${pct!==null?`<div class="progress-bar" style="width:100%;margin:0;"><div class="progress-fill${onFinal?' done-fill':''}" style="width:${pct}%"></div></div>`:''}`;
+bEl.appendChild(el);
+});
+}
+
+// Today’s chores
+const cEl=document.getElementById(‘sidebarChores’);
+if(cEl){
+cEl.innerHTML=’’;
+const tc=chores.filter(c=>isDueToday(c));
+if(!tc.length){cEl.innerHTML=’<div class="sidebar-empty">No chores today!</div>’;}
+tc.forEach(c=>{
+const ri=chores.indexOf(c);
+const el=document.createElement(‘div’);el.className=‘sidebar-chore’+(c.done?’ done’:’’);
+el.innerHTML=`<div class="s-check">${c.done?'✓':''}</div><div class="s-chore-label">${c.label}</div>`;
+el.addEventListener(‘click’,()=>{chores[ri].done=!chores[ri].done;renderChores();renderSidebar();});
+cEl.appendChild(el);
+});
+}
+
+// Todos
+const tEl=document.getElementById(‘sidebarTodos’);
+if(tEl){
+tEl.innerHTML=’’;
+if(!todos.length){tEl.innerHTML=’<div class="sidebar-empty">No tasks yet.</div>’;}
+todos.forEach((t,i)=>{const el=document.createElement(‘div’);el.className=‘sidebar-todo’+(t.done?’ done-todo’:’’);el.innerHTML=`<div class="s-todo-check" onclick="toggleTodo(${i})">${t.done?'✓':''}</div><div class="s-todo-label">${t.text}</div>`;tEl.appendChild(el);});
+}
+}
+
+// ── COLLAPSIBLE SECTIONS ──────────────────────────────────────────────────────
+function makeCollapse(id, label, color, count, innerHtml, startOpen=false) {
+const wrap = document.createElement(‘div’);
+wrap.style.cssText = ‘margin-bottom:10px;’;
+wrap.innerHTML = ` <div class="collapse-header${startOpen?' open':''}" onclick="toggleCollapse('${id}')"> <span style="font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${color};">${label}</span> <span style="font-size:11px;color:var(--muted);margin-left:6px;">${count}</span> <span class="collapse-chevron" style="margin-left:auto;">›</span> </div> <div class="collapse-body${startOpen?' open':''}" id="cb-${id}">${innerHtml}</div>`;
+return wrap;
+}
+function toggleCollapse(id) {
+const body = document.getElementById(`cb-${id}`);
+const hdr  = body ? body.previousElementSibling : null;
+if (!body) return;
+body.classList.toggle(‘open’);
+if (hdr) hdr.classList.toggle(‘open’);
+}
+
+// ── PARSE RELEASE DATE ────────────────────────────────────────────────────────
+function parseReleaseDate(str) {
+if (!str) return null;
+const m = str.match(/^(\d{1,2})/(\d{1,2})/(\d{4})$/);
+if (m) return new Date(parseInt(m[3]), parseInt(m[1])-1, parseInt(m[2]));
+const d = new Date(str);
+return isNaN(d) ? null : d;
+}
+
+// ── MEDIA LIST (books/games/movies) ──────────────────────────────────────────
+function toggleMediaForm(type) {
+const ids = {book:‘addBookForm’, game:‘addGameForm’, movie:‘addMovieForm’};
+const e = document.getElementById(ids[type]);
+if (e) e.style.display = e.style.display===‘none’ ? ‘block’ : ‘none’;
+}
+
+function addMedia(type) {
+if (type === ‘book’) {
+const title = document.getElementById(‘bookTitle’).value.trim(); if(!title) return;
+bookData.push({title, author:document.getElementById(‘bookAuthor’).value.trim(), emoji:document.getElementById(‘bookEmoji’).value.trim()||‘📖’, status:document.getElementById(‘bookStatus’).value});
+[‘bookTitle’,‘bookAuthor’,‘bookEmoji’].forEach(id=>document.getElementById(id).value=’’);
+toggleMediaForm(‘book’); renderWatchlist();
+} else if (type === ‘game’) {
+const title = document.getElementById(‘gameTitle’).value.trim(); if(!title) return;
+gameData.push({title, platform:document.getElementById(‘gamePlatform’).value.trim(), emoji:document.getElementById(‘gameEmoji’).value.trim()||‘🎮’, status:document.getElementById(‘gameStatus’).value, release:document.getElementById(‘gameRelease’).value.trim()});
+[‘gameTitle’,‘gamePlatform’,‘gameEmoji’,‘gameRelease’].forEach(id=>document.getElementById(id).value=’’);
+toggleMediaForm(‘game’); renderWatchlist();
+} else if (type === ‘movie’) {
+const title = document.getElementById(‘movieTitle’).value.trim(); if(!title) return;
+movieData.push({title, emoji:document.getElementById(‘movieEmoji’).value.trim()||‘🎬’, release:document.getElementById(‘movieReleaseDate’).value.trim(), planDate:document.getElementById(‘moviePlanDate’).value.trim(), status:document.getElementById(‘movieStatus’).value});
+[‘movieTitle’,‘movieEmoji’,‘movieReleaseDate’,‘moviePlanDate’].forEach(id=>document.getElementById(id).value=’’);
+toggleMediaForm(‘movie’); renderWatchlist();
+}
+}
+
+function removeMedia(type, i) {
+if(type===‘book’) bookData.splice(i,1);
+else if(type===‘game’) gameData.splice(i,1);
+else movieData.splice(i,1);
+renderWatchlist();
+}
+
+function cycleMediaStatus(type, i) {
+const arr = type===‘book’?bookData:type===‘game’?gameData:movieData;
+const order = MEDIA_CYCLES[type];
+const cur = order.indexOf(arr[i].status);
+arr[i].status = order[(cur+1)%order.length];
+renderWatchlist();
+}
+
+function renderMediaList(type) {
+const arr    = type===‘book’ ? bookData : type===‘game’ ? gameData : movieData;
+const el     = document.getElementById(type===‘book’?‘bookList’:type===‘game’?‘gameList’:‘movieList’);
+if (!el) return;
+el.innerHTML = ‘’;
+if (!arr.length) { el.innerHTML=`<div style="color:var(--muted);font-size:13px;padding:10px 0;">Nothing added yet!</div>`; return; }
+
+const groupOrder = type===‘book’ ? BOOK_GROUP_ORDER : type===‘game’ ? GAME_GROUP_ORDER : MOVIE_GROUP_ORDER;
+const labelMap   = type===‘book’ ? BOOK_STATUS_LABEL : type===‘game’ ? GAME_STATUS_LABEL : MOVIE_STATUS_LABEL;
+const colorMap   = type===‘book’ ? BOOK_STATUS_COLOR : type===‘game’ ? GAME_STATUS_COLOR : MOVIE_STATUS_COLOR;
+
+const sorted = arr.map((item,i)=>({…item,_i:i})).sort((a,b)=>{
+const da = parseReleaseDate(a.release), db = parseReleaseDate(b.release);
+if(!da&&!db) return 0; if(!da) return 1; if(!db) return -1; return da-db;
+});
+
+const groups = {};
+groupOrder.forEach(s => groups[s] = []);
+sorted.forEach(item => { if(groups[item.status]) groups[item.status].push(item); });
+
+// Find next 2 upcoming movies by soonest release date >= today
+const today = new Date(); today.setHours(0,0,0,0);
+const nextTwo = new Set();
+if (type === ‘movie’) {
+const future = (groups[‘upcoming’] || []).filter(m => {
+const d = parseReleaseDate(m.release);
+return d && d >= today;
+});
+future.slice(0, 2).forEach(m => nextTwo.add(m._i));
+}
+
+function buildItemHtml(item) {
+const sub     = item.author || item.platform || ‘’;
+const relStr  = item.release  ? `<span style="color:var(--muted);font-size:11px;">📅 ${item.release}</span>`  : ‘’;
+const planStr = item.planDate ? `<span style="color:var(--accent);font-size:11px;">🎟 ${item.planDate}</span>` : ‘’;
+const subStr  = sub ? `<span style="color:var(--muted);font-size:11px;">${sub}</span>` : ‘’;
+const meta    = [relStr, planStr, subStr].filter(Boolean).join(’ ’);
+const isNext  = nextTwo.has(item._i);
+const nextStyle = isNext ? ‘border:1px solid rgba(192,132,252,0.5);background:rgba(192,132,252,0.07);’ : ‘’;
+const nextBadge = isNext ? `<span style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:rgba(192,132,252,0.2);color:#c084fc;flex-shrink:0;">Up Next</span>` : ‘’;
+return `<div class="watch-item clickable" onclick="openModal('${type}',${item._i})" style="${nextStyle}"> <div class="watch-thumb">${item.emoji}</div> <div class="watch-info"> <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"> <div class="watch-title">${item.title}</div>${nextBadge} </div> ${meta ? `<div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;">${meta}</div>` : ''} </div> </div>`;
+}
+
+groupOrder.forEach(status => {
+const items = groups[status];
+if (!items.length) return;
+const color = colorMap[status] || ‘var(–muted)’;
+const label = labelMap[status] || status;
+const isOpen = status===‘playing’||status===‘reading’||status===‘upcoming’;
+
+```
+if (type === 'movie' && status === 'upcoming') {
+  // Sub-group by year
+  const byYear = {};
+  items.forEach(item => {
+    const d = parseReleaseDate(item.release);
+    const yr = d ? d.getFullYear() : 'TBD';
+    if (!byYear[yr]) byYear[yr] = [];
+    byYear[yr].push(item);
+  });
+  const years = Object.keys(byYear).sort((a,b) => a==='TBD'?1:b==='TBD'?-1:Number(a)-Number(b));
+  let html = '';
+  years.forEach((yr, yi) => {
+    html += `<div style="font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:${yi===0?'4px':'14px'} 2px 6px;border-bottom:1px solid var(--border);margin-bottom:6px;">${yr}</div>`;
+    byYear[yr].forEach(item => { html += buildItemHtml(item); });
+  });
+  el.appendChild(makeCollapse(`media-${type}-${status}`, label, color, items.length, html, isOpen));
+} else {
+  let html = '';
+  items.forEach(item => { html += buildItemHtml(item); });
+  el.appendChild(makeCollapse(`media-${type}-${status}`, label, color, items.length, html, isOpen));
+}
+```
+
+});
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+let _modalState = {};
+function openModal(type, idx) {
+_modalState = {type, idx};
+_renderModal();
+document.getElementById(‘mediaModal’).classList.add(‘open’);
+document.body.style.overflow = ‘hidden’;
+}
+function closeModal(e) {
+if (e && e.target !== document.getElementById(‘mediaModal’)) return;
+document.getElementById(‘mediaModal’).classList.remove(‘open’);
+document.body.style.overflow = ‘’;
+_modalState = {};
+}
+
+function _renderModal() {
+const {type, idx} = _modalState;
+const emojiEl = document.getElementById(‘modalEmoji’);
+const titleEl = document.getElementById(‘modalTitle’);
+const subEl   = document.getElementById(‘modalSubtitle’);
+const bodyEl  = document.getElementById(‘modalBody’);
+const editEl  = document.getElementById(‘modalEditArea’);
+const actEl   = document.getElementById(‘modalActions’);
+editEl.classList.remove(‘open’);
+editEl.innerHTML = ‘’;
+bodyEl.innerHTML = ‘’;
+actEl.innerHTML  = ‘’;
+
+if (type === ‘tv’) {
+const s = tvData[idx];
+emojiEl.textContent = s.emoji;
+titleEl.textContent = s.title;
+subEl.textContent   = s.sub || TV_STATUS_LABEL[s.status] || s.status;
+const sc = TV_STATUS_COLOR[s.status]||‘var(–muted)’;
+const catchUp = getCatchUp(idx);
+const pct = s.totalEp ? Math.round((s.currentEp/s.totalEp)*100) : null;
+bodyEl.innerHTML = ` <div class="modal-row"><span class="modal-label">Status</span><span class="modal-value"><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;background:${sc}22;color:${sc};">${TV_STATUS_LABEL[s.status]||s.status}</span></span></div> ${s.with?`<div class="modal-row"><span class="modal-label">Watch With</span><span class="modal-value"><span class="with-badge">${s.with}</span></span></div>`:''} ${s.days&&s.days.length?`<div class="modal-row"><span class="modal-label">Airs</span><span class="modal-value">${s.days.map(d=>`<span class="day-badge">${d}</span>`).join(’ ‘)}</span></div>`:''} ${s.premiereDate?`<div class="modal-row"><span class="modal-label">Premieres</span><span class="modal-value">${s.premiereDate}</span></div>`:''} ${s.endDate?`<div class="modal-row"><span class="modal-label">End Date</span><span class="modal-value">${s.endDate}</span></div>`:''} <div class="modal-row"><span class="modal-label">Progress</span><span class="modal-value">Ep ${s.currentEp}${s.totalEp?' / '+s.totalEp:''}</span></div> ${pct!==null?`<div style="margin-top:4px;"><div class="progress-bar"><div class="progress-fill${pct===100?' done-fill':''}" style="width:${pct}%"></div></div></div>`:''} ${catchUp.length?`<div style="margin-top:8px;padding:10px;background:rgba(255,123,123,0.07);border-radius:8px;border:1px solid rgba(255,123,123,0.2);"><div style="font-size:11px;color:var(--accent4);font-weight:600;margin-bottom:6px;">${catchUp.length} unwatched</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${catchUp.map(ep=>`<button class="ep-btn" onclick="markWatched(${idx},${ep});_renderModal();" style="color:var(--accent3);border-color:rgba(109,219,184,0.3);">Ep ${ep} ✓</button>`).join(’’)}<button class="ep-btn" onclick="markAllWatched(${idx});_renderModal();" style="color:var(--accent3);">✓ All</button></div></div>`:''} <div class="ep-controls" style="margin-top:10px;"> <button class="ep-btn" onclick="chgTV(${idx},-1);_renderModal();">← Back</button> <span class="ep-display">Ep ${s.currentEp}${s.totalEp?' / '+s.totalEp:''}</span> <button class="ep-btn" onclick="chgTV(${idx},1);_renderModal();" style="color:var(--accent3);border-color:rgba(109,219,184,0.3);">Watched ✓</button> </div>`;
+const daysChecked = [‘S’,‘M’,‘T’,‘W’,‘Th’,‘F’,‘Sa’].map(d=>`<label class="day-pick" style="font-size:10px;padding:3px 6px;"><input type="checkbox" value="${d}" ${s.days&&s.days.includes(d)?'checked':''}/> ${d}</label>`).join(’’);
+editEl.innerHTML = ` <div style="display:grid;grid-template-columns:52px 1fr;gap:8px;margin-bottom:8px;"> <input type="text" id="me-emoji" class="todo-input" value="${s.emoji}" style="text-align:center;" maxlength="2"/> <input type="text" id="me-title" class="todo-input" value="${s.title}" placeholder="Title"/> </div> <input type="text" id="me-sub" class="todo-input" value="${s.sub||''}" placeholder="Season / subtitle" style="margin-bottom:8px;width:100%;"/> <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;"> <input type="number" id="me-cur" class="todo-input" value="${s.currentEp}" placeholder="Current ep" min="1"/> <input type="number" id="me-tot" class="todo-input" value="${s.totalEp||''}" placeholder="Total eps" min="1"/> </div> <input type="text" id="me-with" class="todo-input" value="${s.with||''}" placeholder="Watch with (e.g. R&K, Solo)" style="margin-bottom:8px;width:100%;"/> <select id="me-status" class="todo-input" style="margin-bottom:8px;width:100%;"> <option value="watching"${s.status==='watching'?' selected':''}>Currently Watching</option> <option value="airing"${s.status==='airing'?' selected':''}>Currently Airing</option> <option value="upcoming"${s.status==='upcoming'?' selected':''}>Upcoming</option> <option value="backlog"${s.status==='backlog'?' selected':''}>Backlog</option> </select> <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;"> <input type="date" id="me-end" class="todo-input" value="${s.endDate||''}" placeholder="End date"/> <input type="date" id="me-prem" class="todo-input" value="${s.premiereDate||''}" placeholder="Premiere date"/> </div> <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Airs on:</div> <div style="display:flex;gap:6px;flex-wrap:wrap;" id="me-days">${daysChecked}</div>`;
+
+} else if (type === ‘movie’) {
+const m = movieData[idx];
+emojiEl.textContent = m.emoji;
+titleEl.textContent = m.title;
+subEl.textContent   = m.release || MOVIE_STATUS_LABEL[m.status] || m.status;
+const sc = MOVIE_STATUS_COLOR[m.status]||‘var(–muted)’;
+bodyEl.innerHTML = ` <div class="modal-row"><span class="modal-label">Status</span><span class="modal-value"><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;background:${sc}22;color:${sc};">${MOVIE_STATUS_LABEL[m.status]||m.status}</span></span></div> ${m.release?`<div class="modal-row"><span class="modal-label">Release</span><span class="modal-value">📅 ${m.release}</span></div>`:''} ${m.planDate?`<div class="modal-row"><span class="modal-label">Plan to See</span><span class="modal-value">🎟 ${m.planDate}</span></div>`:''}`;
+editEl.innerHTML = ` <div style="display:flex;gap:8px;margin-bottom:8px;"> <input type="text" id="me-emoji" class="todo-input" value="${m.emoji}" style="width:48px;text-align:center;" maxlength="2"/> <input type="text" id="me-title" class="todo-input" value="${m.title}" placeholder="Title" style="flex:1;"/> </div> <input type="text" id="me-release" class="todo-input" value="${m.release||''}" placeholder="Release date (e.g. 3/8/2026)" style="margin-bottom:8px;width:100%;"/> <input type="text" id="me-plan" class="todo-input" value="${m.planDate||''}" placeholder="Plan to see" style="margin-bottom:8px;width:100%;"/> <select id="me-status" class="todo-input" style="width:100%;"> <option value="upcoming"${m.status==='upcoming'?' selected':''}>Upcoming</option> <option value="backlog"${m.status==='backlog'?' selected':''}>Backlog / Want to See</option> <option value="missed"${m.status==='missed'?' selected':''}>Missed (in theaters)</option> <option value="done"${m.status==='done'?' selected':''}>Watched</option> </select>`;
+
+} else if (type === ‘game’) {
+const g = gameData[idx];
+emojiEl.textContent = g.emoji;
+titleEl.textContent = g.title;
+subEl.textContent   = g.platform || GAME_STATUS_LABEL[g.status] || g.status;
+const sc = GAME_STATUS_COLOR[g.status]||‘var(–muted)’;
+bodyEl.innerHTML = ` <div class="modal-row"><span class="modal-label">Status</span><span class="modal-value"><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;background:${sc}22;color:${sc};">${GAME_STATUS_LABEL[g.status]||g.status}</span></span></div> ${g.platform?`<div class="modal-row"><span class="modal-label">Platform</span><span class="modal-value">${g.platform}</span></div>`:''} ${g.release?`<div class="modal-row"><span class="modal-label">Release</span><span class="modal-value">📅 ${g.release}</span></div>`:''}`;
+editEl.innerHTML = ` <div style="display:flex;gap:8px;margin-bottom:8px;"> <input type="text" id="me-emoji" class="todo-input" value="${g.emoji}" style="width:48px;text-align:center;" maxlength="2"/> <input type="text" id="me-title" class="todo-input" value="${g.title}" placeholder="Title" style="flex:1;"/> </div> <input type="text" id="me-platform" class="todo-input" value="${g.platform||''}" placeholder="Platform" style="margin-bottom:8px;width:100%;"/> <input type="text" id="me-release" class="todo-input" value="${g.release||''}" placeholder="Release date" style="margin-bottom:8px;width:100%;"/> <select id="me-status" class="todo-input" style="width:100%;"> <option value="playing"${g.status==='playing'?' selected':''}>Currently Playing</option> <option value="upcoming"${g.status==='upcoming'?' selected':''}>Upcoming</option> <option value="backlog"${g.status==='backlog'?' selected':''}>Backlog</option> <option value="done"${g.status==='done'?' selected':''}>Finished</option> </select>`;
+
+} else if (type === ‘book’) {
+const b = bookData[idx];
+emojiEl.textContent = b.emoji;
+titleEl.textContent = b.title;
+subEl.textContent   = b.author || BOOK_STATUS_LABEL[b.status] || b.status;
+const sc = BOOK_STATUS_COLOR[b.status]||‘var(–muted)’;
+bodyEl.innerHTML = ` <div class="modal-row"><span class="modal-label">Status</span><span class="modal-value"><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;background:${sc}22;color:${sc};">${BOOK_STATUS_LABEL[b.status]||b.status}</span></span></div> ${b.author?`<div class="modal-row"><span class="modal-label">Author</span><span class="modal-value">${b.author}</span></div>`:''}`;
+editEl.innerHTML = ` <div style="display:flex;gap:8px;margin-bottom:8px;"> <input type="text" id="me-emoji" class="todo-input" value="${b.emoji}" style="width:48px;text-align:center;" maxlength="2"/> <input type="text" id="me-title" class="todo-input" value="${b.title}" placeholder="Title" style="flex:1;"/> </div> <input type="text" id="me-author" class="todo-input" value="${b.author||''}" placeholder="Author" style="margin-bottom:8px;width:100%;"/> <select id="me-status" class="todo-input" style="width:100%;"> <option value="reading"${b.status==='reading'?' selected':''}>Currently Reading</option> <option value="backlog"${b.status==='backlog'?' selected':''}>Backlog</option> <option value="done"${b.status==='done'?' selected':''}>Finished</option> </select>`;
+}
+
+actEl.innerHTML = ` <button class="add-btn" style="flex:1;" onclick="_saveModalEdit()">Save</button> <button class="reset-btn" onclick="_toggleModalEdit()">Edit</button> <button class="reset-btn" style="color:var(--accent4);border-color:rgba(255,123,123,0.3);" onclick="_deleteFromModal()">Delete</button>`;
+}
+
+function _toggleModalEdit() {
+document.getElementById(‘modalEditArea’).classList.toggle(‘open’);
+}
+
+function _saveModalEdit() {
+const {type, idx} = _modalState;
+if (type === ‘tv’) {
+const t = document.getElementById(‘me-title’).value.trim(); if(!t) return;
+tvData[idx].title        = t;
+tvData[idx].sub          = document.getElementById(‘me-sub’).value.trim();
+tvData[idx].currentEp    = parseInt(document.getElementById(‘me-cur’).value)||1;
+tvData[idx].totalEp      = parseInt(document.getElementById(‘me-tot’).value)||null;
+tvData[idx].emoji        = document.getElementById(‘me-emoji’).value.trim()||tvData[idx].emoji;
+tvData[idx].with         = document.getElementById(‘me-with’).value.trim()||null;
+tvData[idx].status       = document.getElementById(‘me-status’).value;
+tvData[idx].endDate      = document.getElementById(‘me-end’).value||null;
+tvData[idx].premiereDate = document.getElementById(‘me-prem’).value||null;
+tvData[idx].days         = […document.querySelectorAll(’#me-days input:checked’)].map(cb=>cb.value);
+if(!tvData[idx].watched) tvData[idx].watched=[];
+} else if (type === ‘movie’) {
+const t = document.getElementById(‘me-title’).value.trim(); if(!t) return;
+movieData[idx].title    = t;
+movieData[idx].emoji    = document.getElementById(‘me-emoji’).value.trim()||movieData[idx].emoji;
+movieData[idx].release  = document.getElementById(‘me-release’).value.trim();
+movieData[idx].planDate = document.getElementById(‘me-plan’).value.trim();
+movieData[idx].status   = document.getElementById(‘me-status’).value;
+} else if (type === ‘game’) {
+const t = document.getElementById(‘me-title’).value.trim(); if(!t) return;
+gameData[idx].title    = t;
+gameData[idx].emoji    = document.getElementById(‘me-emoji’).value.trim()||gameData[idx].emoji;
+gameData[idx].platform = document.getElementById(‘me-platform’).value.trim();
+gameData[idx].release  = document.getElementById(‘me-release’).value.trim();
+gameData[idx].status   = document.getElementById(‘me-status’).value;
+} else if (type === ‘book’) {
+const t = document.getElementById(‘me-title’).value.trim(); if(!t) return;
+bookData[idx].title  = t;
+bookData[idx].emoji  = document.getElementById(‘me-emoji’).value.trim()||bookData[idx].emoji;
+bookData[idx].author = document.getElementById(‘me-author’).value.trim();
+bookData[idx].status = document.getElementById(‘me-status’).value;
+}
+renderWatchlist(); renderSidebar();
+_renderModal();
+document.getElementById(‘modalEditArea’).classList.remove(‘open’);
+}
+
+function _deleteFromModal() {
+const {type, idx} = _modalState;
+if      (type===‘tv’)    tvData.splice(idx,1);
+else if (type===‘movie’) movieData.splice(idx,1);
+else if (type===‘game’)  gameData.splice(idx,1);
+else if (type===‘book’)  bookData.splice(idx,1);
+document.getElementById(‘mediaModal’).classList.remove(‘open’);
+document.body.style.overflow = ‘’;
+_modalState = {};
+renderWatchlist(); renderSidebar();
+}
+
+// –– STORAGE ––
+const STORAGE_KEYS = {
+tvData:   ‘rkd_tv’,
+bookData: ‘rkd_books’,
+gameData: ‘rkd_games’,
+movieData:‘rkd_movies’,
+chores:   ‘rkd_chores’,
+todos:    ‘rkd_todos’,
+userCal:  ‘rkd_ucal’,
+};
+
+function saveAll() {
+try {
+localStorage.setItem(STORAGE_KEYS.tvData,    JSON.stringify(tvData));
+localStorage.setItem(STORAGE_KEYS.bookData,  JSON.stringify(bookData));
+localStorage.setItem(STORAGE_KEYS.gameData,  JSON.stringify(gameData));
+localStorage.setItem(STORAGE_KEYS.movieData, JSON.stringify(movieData));
+localStorage.setItem(STORAGE_KEYS.chores,    JSON.stringify(chores));
+localStorage.setItem(STORAGE_KEYS.todos,     JSON.stringify(todos));
+localStorage.setItem(STORAGE_KEYS.userCal,   JSON.stringify(_userCalData));
+} catch(e) { console.warn(‘Save failed:’, e); }
+}
+
+let _userCalData = {};
+
+function loadAll() {
+try {
+const tv = localStorage.getItem(STORAGE_KEYS.tvData);
+if (tv) { const d=JSON.parse(tv); tvData.length=0; d.forEach(x=>tvData.push(x)); }
+
+```
+const bk = localStorage.getItem(STORAGE_KEYS.bookData);
+if (bk) { const d=JSON.parse(bk); bookData.length=0; d.forEach(x=>bookData.push(x)); }
+
+const gm = localStorage.getItem(STORAGE_KEYS.gameData);
+if (gm) { const d=JSON.parse(gm); gameData.length=0; d.forEach(x=>gameData.push(x)); }
+
+const mv = localStorage.getItem(STORAGE_KEYS.movieData);
+if (mv) { const d=JSON.parse(mv); movieData.length=0; d.forEach(x=>movieData.push(x)); }
+
+const ch = localStorage.getItem(STORAGE_KEYS.chores);
+if (ch) { const d=JSON.parse(ch); chores.length=0; d.forEach(x=>chores.push(x)); }
+
+const td = localStorage.getItem(STORAGE_KEYS.todos);
+if (td) { const d=JSON.parse(td); todos.length=0; d.forEach(x=>todos.push(x)); }
+
+const uc = localStorage.getItem(STORAGE_KEYS.userCal);
+if (uc) _userCalData = JSON.parse(uc);
+```
+
+} catch(e) { console.warn(‘Load failed:’, e); }
+}
+
+// –– INIT ––
+document.getElementById(‘tabHome’).classList.add(‘active’);
+document.getElementById(‘tab-calendar’).classList.add(‘active’);
+loadAll();
+mergeImportedSchedule();
+// Re-apply user calData on top of imported
+Object.entries(_userCalData).forEach(([key, entries]) => {
+if (!calData[key]) calData[key] = [];
+entries.forEach(e => { if (!calData[key].some(x=>x.text===e.text)) calData[key].push(e); });
+});
+renderCalendar();
+renderSidebar();
+renderChores();
+renderTodos();
+renderWatchlist();
+
+// –– SERVICE WORKER ––
+if (‘serviceWorker’ in navigator) {
+const swCode = ` const CACHE='rkd-v1'; self.addEventListener('install',()=>self.skipWaiting()); self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))))); self.clients.claim(); }); self.addEventListener('fetch',e=>{ if(!e.request.url.startsWith('http')) return; e.respondWith( caches.open(CACHE).then(cache=> cache.match(e.request).then(hit=>{ const fresh=fetch(e.request).then(r=>{cache.put(e.request,r.clone());return r;}).catch(()=>hit); return hit||fresh; }) ) ); });`;
+const blob = new Blob([swCode],{type:‘application/javascript’});
+navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+</script>
