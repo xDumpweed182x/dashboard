@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chronicle</title>
 <style>
-/* System font stack — works offline, renders identically on all Apple devices */
+/* System font stack &mdash; works offline, renders identically on all Apple devices */
 </style>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -43,7 +43,6 @@ body{
 .app{display:flex;flex-direction:column;height:100%;overflow:hidden;border-radius:44px;}
 .statusbar{height:50px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px 0;flex-shrink:0;}
 .st-time{font-family:var(–mono);font-size:13px;font-weight:500;color:var(–t1);}
-.st-icons{font-size:11px;color:var(–t1);display:flex;gap:5px;align-items:center;}
 
 .screens{flex:1;position:relative;overflow:hidden;}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .17s ease,transform .17s ease;overflow:hidden;}
@@ -72,9 +71,9 @@ body{
 .fab{position:absolute;right:18px;bottom:calc(var(–tabh) + 12px + var(–safeb));width:50px;height:50px;border-radius:50%;background:var(–t1);border:none;color:var(–bg);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:transform .12s;z-index:10;}
 .fab:active{transform:scale(.93);}
 
-/* ══════════════
+/*
 CALENDAR
-══════════════ */
+*/
 .cal-toggle{display:flex;gap:4px;padding:0 20px 8px;flex-shrink:0;}
 .ct-btn{font-family:var(–mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:6px;border:1px solid var(–b1);background:transparent;color:var(–t3);cursor:pointer;transition:all .12s;}
 .ct-btn.on{border-color:var(–b3);color:var(–t1);background:var(–dim);}
@@ -116,7 +115,7 @@ CALENDAR
 .aitem.overdue::before{opacity:.6;}
 .ep-check{width:22px;height:22px;border-radius:50%;border:2px solid var(–b2);background:transparent;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;position:relative;z-index:2;}
 .ep-check.checked{background:var(–c-tv);border-color:var(–c-tv);}
-.ep-check.checked::after{content:‘✓’;font-size:11px;color:#fff;font-weight:700;}
+.ep-check.checked::after{content:’✓’;font-size:11px;color:#fff;font-weight:700;}
 .ep-check.movie-chk{border-color:var(–c-movie);}
 .ep-check.movie-chk.checked{background:var(–c-movie);border-color:var(–c-movie);}
 .ep-check.event-chk{border-color:var(–b2);}
@@ -176,9 +175,9 @@ CALENDAR
 .mg-pip{width:4px;height:4px;border-radius:50%;}
 .mgcell.sel .mg-pip{opacity:.4;}
 
-/* ══════════════
+/*
 TIMELINE
-══════════════ */
+*/
 .tlbody{padding:0 16px 110px;}
 .tlm{margin-bottom:22px;}
 .tl-yr{margin-bottom:4px;}
@@ -196,9 +195,9 @@ TIMELINE
 .tld-lbl{font-family:var(–mono);font-size:9px;color:var(–t4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;padding-left:2px;}
 .tld-lbl.today{color:var(–t2);}
 
-/* ══════════════
+/*
 SERIES
-══════════════ */
+*/
 .srbody{padding:0 16px 110px;}
 .ssblock{border:1px solid var(–b1);border-radius:14px;overflow:hidden;margin-bottom:9px;}
 .sshd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(–s1);cursor:pointer;user-select:none;}
@@ -300,9 +299,9 @@ SERIES
 .ep-counter{display:flex;align-items:center;justify-content:center;gap:4px;}
 .ep-watched{font-family:var(–mono);font-size:11px;color:var(–c-trip);padding:2px 7px;border-radius:20px;background:rgba(126,201,160,.1);border:1px solid rgba(126,201,160,.2);}
 
-/* ══════════════
+/*
 SETTINGS
-══════════════ */
+*/
 .setbody{padding:0 16px 110px;}
 .sg{margin-bottom:22px;}
 .sg-lbl{font-family:var(–mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(–t3);margin-bottom:9px;padding-left:4px;}
@@ -318,9 +317,9 @@ SETTINGS
 .ctx-inp:focus{border-color:var(–b3);}
 .ctx-addbtn{padding:9px 14px;border-radius:9px;background:var(–dim);border:1px solid var(–b2);color:var(–t1);font-family:var(–mono);font-size:11px;cursor:pointer;}
 
-/* ══════════════
+/*
 SHEET
-══════════════ */
+*/
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:none;align-items:flex-end;}
 .overlay.open{display:flex;}
 .sheet{width:100%;background:var(–s2);border-top:1px solid var(–b2);border-radius:20px 20px 0 0;padding:0 0 calc(24px + var(–safeb));max-height:91%;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:10000;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
@@ -358,7 +357,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
 
   <div class="statusbar">
     <span class="st-time" id="stTime"></span>
-    <div class="st-icons"><span>●●●</span><span>⬛</span></div>
+
   </div>
 
   <div class="screens">
@@ -369,7 +368,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
 <div class="screen on" id="scr-timeline">
   <div class="shead">
     <div><div class="stitle">Timeline</div></div>
-    <button class="icon-btn" onclick="scrollToToday()" title="Today">◎</button>
+    <button class="icon-btn" onclick="scrollToToday()" title="Today">&#9678;</button>
   </div>
   <div class="scroll"><div class="tlbody" id="tlbody"></div></div>
 </div>
@@ -412,19 +411,19 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
 
   <div class="tabbar">
     <button class="tab on" data-s="timeline" onclick="goTab('timeline')">
-      <div class="tabico">≡</div><span class="tablbl" id="tlTabLbl">Timeline</span>
+      <div class="tabico">&#8801;</div><span class="tablbl" id="tlTabLbl">Timeline</span>
     </button>
     <button class="tab" data-s="movies" onclick="goTab('movies')">
-      <div class="tabico">◉</div><span class="tablbl">Movies</span>
+      <div class="tabico">&#9673;</div><span class="tablbl">Movies</span>
     </button>
     <button class="tab" data-s="series" onclick="goTab('series')">
-      <div class="tabico">▶</div><span class="tablbl">Series</span>
+      <div class="tabico">&#9654;</div><span class="tablbl">Series</span>
     </button>
     <button class="tab" data-s="media" onclick="goTab('media')">
-      <div class="tabico">◈</div><span class="tablbl">Media</span>
+      <div class="tabico">&#9672;</div><span class="tablbl">Media</span>
     </button>
     <button class="tab" data-s="settings" onclick="goTab('settings')">
-      <div class="tabico">⚙</div><span class="tablbl">Settings</span>
+      <div class="tabico">&#9881;</div><span class="tablbl">Settings</span>
     </button>
   </div>
 
@@ -437,7 +436,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
     <div class="sheet-handle"></div>
     <div class="sheet-hd">
       <span class="sheet-title" id="evStitle">New Event</span>
-      <button class="sheet-x" onclick="closeEvS()">×</button>
+      <button class="sheet-x" onclick="closeEvS()">&times;</button>
     </div>
     <div class="sbody">
       <div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="evT" placeholder="What's happening?"></div>
@@ -446,7 +445,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
         <div class="fg"><label class="fl">End Date</label><input type="date" class="fi" id="evE"></div>
       </div>
       <div class="fg"><label class="fl">Type</label><div class="chips" id="evTC"></div></div>
-      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="evN" placeholder="Optional…"></div>
+      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="evN" placeholder="Optional..."></div>
     </div>
     <div class="sfoot">
       <button class="sfbtn" onclick="closeEvS()">Cancel</button>
@@ -463,11 +462,11 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
     <div class="sheet-handle"></div>
     <div class="sheet-hd">
       <span class="sheet-title" id="meStitle">New Entry</span>
-      <button class="sheet-x" onclick="closeMeS()">×</button>
+      <button class="sheet-x" onclick="closeMeS()">&times;</button>
     </div>
     <div class="sbody">
-      <div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="meTitle" placeholder="Title…"></div>
-      <div class="fg"><label class="fl">Creator <span style="color:var(--t4);font-size:10px">author / artist / studio</span></label><input type="text" class="fi" id="meCreator" placeholder="Optional…"></div>
+      <div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="meTitle" placeholder="Title..."></div>
+      <div class="fg"><label class="fl">Creator <span style="color:var(--t4);font-size:10px">author / artist / studio</span></label><input type="text" class="fi" id="meCreator" placeholder="Optional..."></div>
       <div class="fg"><label class="fl">Type</label><div class="chips" id="meTypeChips"></div></div>
       <div class="fr2">
         <div class="fg"><label class="fl">Status</label>
@@ -483,7 +482,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
       </div>
       <div class="fg"><label class="fl">Watching With</label><div class="chips" id="meVC" style="margin-top:8px"></div></div>
       <div class="fg"><label class="fl">Rating</label><div id="meStars" style="display:flex;gap:6px;margin-top:8px;font-size:22px"></div></div>
-      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="meNotes" placeholder="Optional…"></div>
+      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="meNotes" placeholder="Optional..."></div>
     </div>
     <div class="sfoot">
       <button class="sfbtn" onclick="closeMeS()">Cancel</button>
@@ -500,10 +499,10 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
     <div class="sheet-handle"></div>
     <div class="sheet-hd">
       <span class="sheet-title" id="mvStitle">New Movie</span>
-      <button class="sheet-x" onclick="closeMvS()">×</button>
+      <button class="sheet-x" onclick="closeMvS()">&times;</button>
     </div>
     <div class="sbody">
-      <div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="mvTitle" placeholder="Movie title…"></div>
+      <div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="mvTitle" placeholder="Movie title..."></div>
       <div class="fr2">
         <div class="fg"><label class="fl">Release Date <span style="color:var(--t4);font-size:10px">optional</span></label><input type="date" class="fi" id="mvRelease"></div>
         <div class="fg"><label class="fl">Planned Watch</label><input type="date" class="fi" id="mvPlanned"></div>
@@ -512,7 +511,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
         <div class="fg"><label class="fl">Format</label><input type="text" class="fi" id="mvFormat" placeholder="e.g. Theater, Stream"></div>
         <div class="fg"><label class="fl">Watching With</label><div class="chips" id="mvVC" style="margin-top:8px"></div></div>
       </div>
-      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="mvNotes" placeholder="Optional…"></div>
+      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="mvNotes" placeholder="Optional..."></div>
     </div>
     <div class="sfoot">
       <button class="sfbtn" onclick="closeMvS()">Cancel</button>
@@ -529,10 +528,10 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
     <div class="sheet-handle"></div>
     <div class="sheet-hd">
       <span class="sheet-title" id="srStitle">New Series</span>
-      <button class="sheet-x" onclick="closeSrS()">×</button>
+      <button class="sheet-x" onclick="closeSrS()">&times;</button>
     </div>
     <div class="sbody">
-      <div class="fg"><label class="fl">Series Name</label><input type="text" class="fi" id="srN" placeholder="Show title…"></div>
+      <div class="fg"><label class="fl">Series Name</label><input type="text" class="fi" id="srN" placeholder="Show title..."></div>
       <div class="fr2">
         <div class="fg"><label class="fl">Season</label><input type="text" class="fi" id="srSe" placeholder="e.g. 3"></div>
         <div class="fg"><label class="fl">Platform</label><input type="text" class="fi" id="srPl" placeholder="e.g. HBO"></div>
@@ -559,10 +558,10 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
         <div class="fg">
           <label class="fl">Current Episode</label>
           <div style="display:flex;align-items:center;gap:10px;margin-top:2px">
-            <button type="button" class="ep-stepper" onclick="stepEp(-1)">−</button>
+            <button type="button" class="ep-stepper" onclick="stepEp(-1)">&minus;</button>
             <div style="flex:1;text-align:center">
               <span id="srEpDisplay" style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1)">1</span>
-              <span id="srEpTotal" style="font-family:var(--mono);font-size:14px;color:var(--t3)"> / —</span>
+              <span id="srEpTotal" style="font-family:var(--mono);font-size:14px;color:var(--t3)"> / &mdash;</span>
             </div>
             <button type="button" class="ep-stepper" onclick="stepEp(1)">+</button>
           </div>
@@ -585,7 +584,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
           </div>
         </div>
       </div>
-      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="srNo" placeholder="Optional…"></div>
+      <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="srNo" placeholder="Optional..."></div>
     </div>
     <div class="sfoot">
       <button class="sfbtn" onclick="closeSrS()">Cancel</button>
@@ -637,7 +636,7 @@ if(!D.media)D.media=[];
 (function(){const extra=[{"id": "megame0", "title": "Saros", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-04-30", "notes": "", "viewing": "Solo", "rating": 0}, {"id": "megame1", "title": "Wolverine", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-09-15", "notes": "", "viewing": "Solo", "rating": 0}, {"id": "megame2", "title": "GTA VI", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-11-19", "notes": "", "viewing": "Solo", "rating": 0}];extra.forEach(m=>{if(!D.media.find(x=>x.id===m.id))D.media.push(m);});})();
 // Seed game entries migrated from series
 (function(){const seedMedia=[{"id": "mesr0032", "title": "Control: Resonant", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2026", "viewing": "Solo", "rating": 0}, {"id": "mesr0035", "title": "Fable", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD", "viewing": "Solo", "rating": 0}, {"id": "mesr0037", "title": "Intergalactic: The Heretic Prophet", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2027", "viewing": "Solo", "rating": 0}, {"id": "mesr0033", "title": "Star Wars: Galactic Racer", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2026", "viewing": "Solo", "rating": 0}];seedMedia.forEach(m=>{if(!D.media.find(x=>x.id===m.id))D.media.push(m);});})();
-// Migrate: podcast→youtube, tbd status→backlog
+// Migrate: podcast&#8594;youtube, tbd status&#8594;backlog
 D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m.status='backlog';});
 // Migration: purge Movie?? placeholder events from saved data
 D.events=D.events.filter(e=>e.title!=='Movie??');
@@ -714,7 +713,7 @@ function updateOverdueBadge(){
 function renderWeek(){
   const ws=wkStart,we=new Date(ws);we.setDate(we.getDate()+6);
   const sm=ws.getMonth()===we.getMonth();
-  document.getElementById('wnLbl').textContent=sm?`${MONTHS[ws.getMonth()].slice(0,3)} ${ws.getDate()}–${we.getDate()}`:`${MONTHS[ws.getMonth()].slice(0,3)} ${ws.getDate()} – ${MONTHS[we.getMonth()].slice(0,3)} ${we.getDate()}`;
+  document.getElementById('wnLbl').textContent=sm?`${MONTHS[ws.getMonth()].slice(0,3)} ${ws.getDate()}&ndash;${we.getDate()}`:`${MONTHS[ws.getMonth()].slice(0,3)} ${ws.getDate()} &ndash; ${MONTHS[we.getMonth()].slice(0,3)} ${we.getDate()}`;
   const tS=todS();const edS=new Set(D.events.map(e=>e.date));
   let h='';
   for(let i=0;i<7;i++){const d=new Date(wkStart);d.setDate(d.getDate()+i);const s=ymd(d);const hasE=edS.has(s);const cls=['wday',s===tS?'today':'',s===selDay?'sel':''].filter(Boolean).join(' ');h+=`<div class="${cls}" onclick="pickDay('${s}')"><span class="wd-dow">${DAYS[d.getDay()][0]}</span><span class="wd-num">${d.getDate()}</span>${hasE?'<div class="wd-pip"></div>':'<div style="height:4px"></div>'}</div>`;}
@@ -733,7 +732,7 @@ function getOverdue(){
     if(D.checked&&D.checked[e.id]) return false; // already checked
     if(e.date>=tS) return false; // not past
     if(e.endDate&&e.endDate>=tS) return false; // still ongoing trip-style
-    // Movie release dates never roll forward — only watch events do
+    // Movie release dates never roll forward &mdash; only watch events do
     if(e.type==='movie'&&e.plannedDate&&e.plannedDate!==e.date) return false;
     return true;
   });
@@ -750,14 +749,14 @@ function renderAgenda(){
   // Sort: unchecked first, checked last (within each group preserve original order)
   evs=evs.filter(e=>!(D.checked&&D.checked[e.id])).concat(evs.filter(e=>D.checked&&D.checked[e.id]));
   const el=document.getElementById('agenda');
-  if(!evs.length){el.innerHTML=`<div class="a-empty"><div class="ei">◌</div><p>Nothing scheduled</p></div>`;return;}
+  if(!evs.length){el.innerHTML=`<div class="a-empty"><div class="ei">&#9676;</div><p>Nothing scheduled</p></div>`;return;}
   el.innerHTML=evs.map(e=>{
     const ck=D.checked&&D.checked[e.id];
     const isEp=e.type==='tv'||e.type==='movie';
     const chkCls=e.type==='movie'?'movie-chk':e.type==='tv'?'':'event-chk';
     const chk=isEp?`<div class="ep-check ${chkCls}${ck?' checked':''}" onclick="event.stopPropagation();toggleCheck('${e.id}')"></div>`:'<div style="width:22px;flex-shrink:0"></div>';
     const overdueTag=e._overdue?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-plan);letter-spacing:.04em;text-transform:uppercase">from ${fmtS(e.date)}</span>`:'';
-    return `<div class="aitem ${e.type}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="openEditEv('${e.id}')" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${e.type}">${e.type}</span>${overdueTag}${e.endDate&&e.endDate!==e.date?`<span class="ai-until">until ${fmtS(e.endDate)}</span>`:''}</div>${e.notes?`<div class="ai-note">${e.notes}</div>`:''}</div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">›</span></div></div>`;
+    return `<div class="aitem ${e.type}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="openEditEv('${e.id}')" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${e.type}">${e.type}</span>${overdueTag}${e.endDate&&e.endDate!==e.date?`<span class="ai-until">until ${fmtS(e.endDate)}</span>`:''}</div>${e.notes?`<div class="ai-note">${e.notes}</div>`:''}</div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
   }).join('');
 }
 
@@ -775,7 +774,7 @@ function renderMG(){
 function mgStep(d){mvD=new Date(mvD.getFullYear(),mvD.getMonth()+d,1);renderMG();}
 
 // TIMELINE
-// populateTLDropdowns removed — using collapsible tree
+// populateTLDropdowns removed &mdash; using collapsible tree
 function isMonthComplete(yk,mk){
   // A month is "complete" if its last day is before today
   const tS=todS();
@@ -833,7 +832,7 @@ function renderTLItem(e){
   const watchTag=e._watchEvent?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-movie);letter-spacing:.04em">watch</span>`:'';
   const releaseTag=isMovieRelease?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-release);letter-spacing:.04em">in theaters</span>`:'';
   const onclick=e.type==='movie'?`openMvSheet('${e._watchEvent?e._releaseId:e.id}')`:`openEditEv('${e.id}')`;
-  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}${e.sessionNote?`<span style="font-family:var(--mono);font-size:10px;color:var(--c-trip)"> → ${e.sessionNote}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">›</span></div></div>`;
+  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}${e.sessionNote?`<span style="font-family:var(--mono);font-size:10px;color:var(--c-trip)"> &#8594; ${e.sessionNote}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
 }
 function renderTL(){
   const tS=todS();
@@ -842,7 +841,7 @@ function renderTL(){
   // Build event map: all events + overdue items injected into today
   const overdue=getOverdue();
   const overdueIds=new Set(overdue.map(e=>e.id));
-  // All events (original dates) — inject virtual watch events for movies with plannedDate
+  // All events (original dates) &mdash; inject virtual watch events for movies with plannedDate
   const allEvs=D.events.slice();
   D.events.forEach(e=>{
     if(e.type==='movie'&&e.plannedDate&&e.plannedDate!==e.date){
@@ -856,7 +855,7 @@ function renderTL(){
     if(!tree[y])tree[y]={};
     if(!tree[y][mk])tree[y][mk]={};
     if(!tree[y][mk][day])tree[y][mk][day]=[];
-    // Skip overdue items at their original date — they'll appear under today
+    // Skip overdue items at their original date &mdash; they'll appear under today
     if(!overdueIds.has(e.id)||e.date===tS) tree[y][mk][day].push(e);
   });
   // Also add virtual watch events for movies whose plannedDate is past & unchecked
@@ -880,14 +879,14 @@ function renderTL(){
   const todayIds=new Set(tree[ty][tmk][tS].map(e=>e.id));
   overdue.forEach(e=>{if(!todayIds.has(e.id))tree[ty][tmk][tS].unshift({...e,_overdue:true});});
 
-  if(!Object.keys(tree).length){el.innerHTML=`<div class="a-empty" style="padding-top:60px"><div class="ei">◌</div><p>Nothing here</p></div>`;return;}
+  if(!Object.keys(tree).length){el.innerHTML=`<div class="a-empty" style="padding-top:60px"><div class="ei">&#9676;</div><p>Nothing here</p></div>`;return;}
 
   let h='';
   Object.keys(tree).sort().forEach(yr=>{
     const yColl=TLC.collapsed.has(yr);
     const yLabel=yr;
     h+=`<div class="tl-yr">`;
-    h+=`<div class="tl-yr-lbl" onclick="tlToggle('${yr}')">${yLabel}<span class="tl-chevron">${yColl?'›':'⌄'}</span></div>`;
+    h+=`<div class="tl-yr-lbl" onclick="tlToggle('${yr}')">${yLabel}<span class="tl-chevron">${yColl?'&#8250;':'&#8964;'}</span></div>`;
     if(!yColl){
       Object.keys(tree[yr]).sort().forEach(mk=>{
         const[,mnk]=mk.split('-');
@@ -899,7 +898,7 @@ function renderTL(){
         h+=`<span>${mLabel}</span>`;
         h+=`<span style="display:flex;gap:8px;align-items:center">`;
         if(complete)h+=`<button class="tl-export-btn" onclick="event.stopPropagation();exportMonth('${yr}','${mnk}')">Export & Remove</button>`;
-        h+=`<span class="tl-chevron">${mColl?'›':'⌄'}</span></span>`;
+        h+=`<span class="tl-chevron">${mColl?'&#8250;':'&#8964;'}</span></span>`;
         h+=`</div>`;
         if(!mColl){
           Object.keys(tree[yr][mk]).sort().forEach(day=>{
@@ -910,9 +909,9 @@ function renderTL(){
             const allDone=items.every(e=>D.checked&&D.checked[e.id]);
             h+=`<div class="tl-day" id="tld-${day}">`;
             h+=`<div class="tl-day-lbl${isT?' today':''}" onclick="tlToggle('${day}')">`;
-            h+=`<span>${isT?'Today · ':''}${DAYS[p.getDay()].toUpperCase()} ${p.getDate()}`;
-            if(allDone)h+=` <span style="color:var(--c-trip);font-size:9px">✓</span>`;
-            h+=`</span><span class="tl-chevron">${dColl?'›':'⌄'}</span>`;
+            h+=`<span>${isT?'Today &middot; ':''}${DAYS[p.getDay()].toUpperCase()} ${p.getDate()}`;
+            if(allDone)h+=` <span style="color:var(--c-trip);font-size:9px">&#10003;</span>`;
+            h+=`</span><span class="tl-chevron">${dColl?'&#8250;':'&#8964;'}</span>`;
             h+=`</div>`;
             if(!dColl){
               const sorted=[...items.filter(e=>!(D.checked&&D.checked[e.id])),...items.filter(e=>D.checked&&D.checked[e.id])];
@@ -938,7 +937,7 @@ function mvItemHTML(e,highlight){
   const tS=todS();
   const isToday=e.date===tS;
   const isPast=e.date<tS;
-  const pw=e.plannedDate?`<span class="mv-planned">▷ ${fmtS(e.plannedDate)}</span>`:'';
+  const pw=e.plannedDate?`<span class="mv-planned">&#9655; ${fmtS(e.plannedDate)}</span>`:'';
   const fmt=e.format?`<span class="mv-fmt">${e.format}</span>`:'';
   const vw=e.viewing?`<span class="vtag" style="font-size:9px;padding:2px 5px">${e.viewing}</span>`:'';
   return `<div class="mv-item${ck?' checked':''}${highlight?' mv-next':''}" onclick="openMvSheet('${e.id}')">
@@ -979,12 +978,12 @@ function renderMovies(){
 
   let h='';
 
-  // ── IN THEATERS ──
+  // &#9472;&#9472; IN THEATERS &#9472;&#9472;
   const itColl=MVC.collapsed.has('intheaters');
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('intheaters')">
       <span class="mv-sec-title">In Theaters</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${inTheaters.length}</span><span class="tl-chevron">${itColl?'›':'⌄'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${inTheaters.length}</span><span class="tl-chevron">${itColl?'&#8250;':'&#8964;'}</span></span>
     </div>`;
   if(!itColl){
     if(!inTheaters.length) h+=`<div class="mv-empty">Nothing currently in theaters</div>`;
@@ -992,12 +991,12 @@ function renderMovies(){
   }
   h+=`</div>`;
 
-  // ── UPCOMING (collapsible by year > month) ──
+  // &#9472;&#9472; UPCOMING (collapsible by year > month) &#9472;&#9472;
   const upColl=MVC.collapsed.has('upcoming');
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('upcoming')">
       <span class="mv-sec-title">Upcoming</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${upcoming.length}</span><span class="tl-chevron">${upColl?'›':'⌄'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${upcoming.length}</span><span class="tl-chevron">${upColl?'&#8250;':'&#8964;'}</span></span>
     </div>`;
   if(!upColl){
     if(!upcoming.length) h+=`<div class="mv-empty">No upcoming movies</div>`;
@@ -1013,13 +1012,13 @@ function renderMovies(){
       Object.keys(byYear).sort().forEach(yr=>{
         const yrKey='upy-'+yr;
         const yrColl=MVC.collapsed.has(yrKey);
-        h+=`<div class="mv-yr-lbl" onclick="mvToggle('${yrKey}')">${yr}<span class="tl-chevron">${yrColl?'›':'⌄'}</span></div>`;
+        h+=`<div class="mv-yr-lbl" onclick="mvToggle('${yrKey}')">${yr}<span class="tl-chevron">${yrColl?'&#8250;':'&#8964;'}</span></div>`;
         if(!yrColl){
           Object.keys(byYear[yr]).sort().forEach(mk=>{
             const mnk=mk.split('-')[1];
             const mKey='upm-'+mk;
             const mColl=MVC.collapsed.has(mKey);
-            h+=`<div class="mv-mo-lbl" onclick="mvToggle('${mKey}')">${MONTHS[parseInt(mnk)-1]}<span class="tl-chevron">${mColl?'›':'⌄'}</span></div>`;
+            h+=`<div class="mv-mo-lbl" onclick="mvToggle('${mKey}')">${MONTHS[parseInt(mnk)-1]}<span class="tl-chevron">${mColl?'&#8250;':'&#8964;'}</span></div>`;
             if(!mColl) byYear[yr][mk].forEach(e=>{h+=mvItemHTML(e,nextTwo.has(e.id));});
           });
         }
@@ -1028,12 +1027,12 @@ function renderMovies(){
   }
   h+=`</div>`;
 
-  // ── TBD ──
+  // &#9472;&#9472; TBD &#9472;&#9472;
   const tbdColl=MVC.collapsed.has('tbd');
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('tbd')">
       <span class="mv-sec-title">TBD</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${tbd.length}</span><span class="tl-chevron">${tbdColl?'›':'⌄'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${tbd.length}</span><span class="tl-chevron">${tbdColl?'&#8250;':'&#8964;'}</span></span>
     </div>`;
   if(!tbdColl){
     if(!tbd.length) h+=`<div class="mv-empty">No TBD movies</div>`;
@@ -1041,12 +1040,12 @@ function renderMovies(){
   }
   h+=`</div>`;
 
-  // ── BACKLOG ──
+  // &#9472;&#9472; BACKLOG &#9472;&#9472;
   const blColl=MVC.collapsed.has('backlog');
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('backlog')">
       <span class="mv-sec-title">Backlog</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${backlog.length}</span><span class="tl-chevron">${blColl?'›':'⌄'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${backlog.length}</span><span class="tl-chevron">${blColl?'&#8250;':'&#8964;'}</span></span>
     </div>`;
   if(!blColl){
     if(!backlog.length) h+=`<div class="mv-empty">No backlog</div>`;
@@ -1054,12 +1053,12 @@ function renderMovies(){
   }
   h+=`</div>`;
 
-  // ── SEEN ──
+  // &#9472;&#9472; SEEN &#9472;&#9472;
   const seenColl=MVC.collapsed.has('seen');
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('seen')">
       <span class="mv-sec-title">Seen</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${seen.length}</span><span class="tl-chevron">${seenColl?'›':'⌄'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${seen.length}</span><span class="tl-chevron">${seenColl?'&#8250;':'&#8964;'}</span></span>
     </div>`;
   if(!seenColl){
     if(!seen.length) h+=`<div class="mv-empty">Nothing seen yet</div>`;
@@ -1084,7 +1083,7 @@ function renderSeries(){
     s.behind=uncheckedPast;
   });
 
-  // ── TODAY'S WATCH ──
+  // &#9472;&#9472; TODAY'S WATCH &#9472;&#9472;
   // 1. Airing shows with an episode today (linked or by nextDate)
   const airingToday=D.series.filter(s=>{
     if(s.cat!=='airing') return false;
@@ -1117,7 +1116,7 @@ function renderSeries(){
     html+=`</div>`;
   }
 
-  // ── STANDARD SECTIONS ──
+  // &#9472;&#9472; STANDARD SECTIONS &#9472;&#9472;
   const secs=[
     {k:'airing',l:'Currently Airing',h:'by next air date'},
     {k:'active',l:'Active',h:'in progress'},
@@ -1129,7 +1128,7 @@ function renderSeries(){
     let items=D.series.filter(s=>s.cat===sec.k);
     if(sec.k==='airing') items.sort((a,b)=>(a.nextDate||'9999').localeCompare(b.nextDate||'9999'));
     const open=sec.k==='airing'||sec.k==='active';
-    html+=`<div class="ssblock"><div class="sshd" onclick="toggleSS(this)"><div class="sshd-l"><span class="sschev ${open?'open':''}">▶</span><span class="sshd-title">${sec.l}</span><span class="ssbadge">${items.length}</span>${sec.h?`<span class="sshint">${sec.h}</span>`:''}</div></div><div class="ssbd ${open?'open':''}">${items.length?items.map(s=>srCard(s)).join(''):'<div class="ss-empty">Nothing here</div>'}</div></div>`;
+    html+=`<div class="ssblock"><div class="sshd" onclick="toggleSS(this)"><div class="sshd-l"><span class="sschev ${open?'open':''}">&#9654;</span><span class="sshd-title">${sec.l}</span><span class="ssbadge">${items.length}</span>${sec.h?`<span class="sshint">${sec.h}</span>`:''}</div></div><div class="ssbd ${open?'open':''}">${items.length?items.map(s=>srCard(s)).join(''):'<div class="ss-empty">Nothing here</div>'}</div></div>`;
   });
 
   document.getElementById('srbody').innerHTML=html;
@@ -1159,7 +1158,7 @@ function srTodayCard(s, isAiringToday, todayEv){
   }
 
   const addTLBtn=s.cat==='active'?`<button class="addtlbtn" onclick="event.stopPropagation();openAddToTimeline('${s.id}')">+ timeline</button>`:'';
-  const cuBtn=s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">✓ caught up</button>`:'';
+  const cuBtn=s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">&#10003; caught up</button>`:'';
 
   return `<div class="srt-card" style="border-left:2px solid ${accent}" onclick="openEditSr('${s.id}')">
     <div class="srt-top">
@@ -1174,7 +1173,7 @@ function srCard(s){
   const btag=s.behind?`<span class="btag">behind</span>`:'';
   let tags='';
   if(s.viewing)tags+=`<span class="vtag">${s.viewing}</span>`;
-  if(s.platform)tags+=`<span class="stag">◈ ${s.platform}</span>`;
+  if(s.platform)tags+=`<span class="stag">&#9672; ${s.platform}</span>`;
   if(s.season)tags+=`<span class="stag">S${s.season}</span>`;
   if((s.cat==='airing'||s.cat==='active')&&s.totalEps){
     const cur=s.curEp||1,tot=s.totalEps;
@@ -1187,7 +1186,7 @@ function srCard(s){
   if(s.notes)tags+=`<span class="stag" style="font-style:italic;color:var(--t4)">${s.notes}</span>`;
   const cls='srcard'+(s.behind?' behind':(s.cat==='airing'?' airing':''));
   const addTLBtn=s.cat==='active'?`<button class="addtlbtn" onclick="event.stopPropagation();openAddToTimeline('${s.id}')">+ timeline</button>`:'';
-  return `<div class="${cls}" onclick="openEditSr('${s.id}')" style="cursor:pointer"><div class="src-main"><div style="display:flex;align-items:center;gap:7px"><span class="src-name">${s.name}</span>${btag}</div><div class="src-tags">${tags}</div></div><div class="src-acts">${s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">✓ caught up</button>`:''}${addTLBtn}<span class="iab" style="color:var(--t4);font-size:12px">›</span></div></div>`;
+  return `<div class="${cls}" onclick="openEditSr('${s.id}')" style="cursor:pointer"><div class="src-main"><div style="display:flex;align-items:center;gap:7px"><span class="src-name">${s.name}</span>${btag}</div><div class="src-tags">${tags}</div></div><div class="src-acts">${s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">&#10003; caught up</button>`:''}${addTLBtn}<span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
 }
 function toggleSS(hd){hd.querySelector('.sschev').classList.toggle('open');hd.nextElementSibling.classList.toggle('open');}
 function markCU(id){
@@ -1211,14 +1210,14 @@ function markCU(id){
   s.nextDate=nextUnchecked.length?nextUnchecked[0].date:'';
   s.behind=false;
   s.caughtUp=true;
-  save();renderTL();renderSeries();toast('Caught up ✓');
+  save();renderTL();renderSeries();toast('Caught up &#10003;');
 }
 
 // SETTINGS
 function renderSettings(){
   const el=document.getElementById('setbody');
   const rows=D.contexts.map((c,i)=>`<div class="sg-row"><span class="sg-rl">${c}</span>${D.contexts.length>1?`<button class="sg-act danger" onclick="delCtx(${i})">Remove</button>`:''}</div>`).join('');
-  el.innerHTML=`<div class="sg"><div class="sg-lbl">Viewing Contexts</div><div class="sg-card">${rows}<div class="ctx-addrow"><input type="text" class="ctx-inp" id="ctxI" placeholder="New context…"><button class="ctx-addbtn" onclick="addCtx()">Add</button></div></div></div><div class="sg"><div class="sg-lbl">Data</div><div class="sg-card"><div class="sg-row"><div><div class="sg-rl">Export</div><div class="sg-rs">Save a JSON backup</div></div><button class="sg-act" onclick="exportD()">Export</button></div><div class="sg-row"><div><div class="sg-rl">Import</div><div class="sg-rs">Restore from JSON</div></div><button class="sg-act" onclick="document.getElementById('impF').click()">Import</button></div><input type="file" id="impF" accept=".json" style="display:none" onchange="importD(this)"><div class="sg-row"><div><div class="sg-rl" style="color:var(--c-plan)">Clear All Data</div><div class="sg-rs">Cannot be undone</div></div><button class="sg-act danger" onclick="clearAll()">Clear</button></div></div></div>`;
+  el.innerHTML=`<div class="sg"><div class="sg-lbl">Viewing Contexts</div><div class="sg-card">${rows}<div class="ctx-addrow"><input type="text" class="ctx-inp" id="ctxI" placeholder="New context..."><button class="ctx-addbtn" onclick="addCtx()">Add</button></div></div></div><div class="sg"><div class="sg-lbl">Data</div><div class="sg-card"><div class="sg-row"><div><div class="sg-rl">Export</div><div class="sg-rs">Save a JSON backup</div></div><button class="sg-act" onclick="exportD()">Export</button></div><div class="sg-row"><div><div class="sg-rl">Import</div><div class="sg-rs">Restore from JSON</div></div><button class="sg-act" onclick="document.getElementById('impF').click()">Import</button></div><input type="file" id="impF" accept=".json" style="display:none" onchange="importD(this)"><div class="sg-row"><div><div class="sg-rl" style="color:var(--c-plan)">Clear All Data</div><div class="sg-rs">Cannot be undone</div></div><button class="sg-act danger" onclick="clearAll()">Clear</button></div></div></div>`;
   document.getElementById('ctxI').addEventListener('keydown',e=>{if(e.key==='Enter')addCtx();});
 }
 function addCtx(){const v=(document.getElementById('ctxI').value||'').trim();if(!v)return;if(D.contexts.includes(v)){toast('Already exists');return;}D.contexts.push(v);save();renderSettings();toast('Added');}
@@ -1244,14 +1243,14 @@ function delEv(id){if(!confirm('Delete event?'))return;D.events=D.events.filter(
 function buildSrVC(){document.getElementById('srVC').innerHTML=D.contexts.map(c=>`<div class="chip ${srV===c?'on':''}" onclick="setSV('${c}')">${c}</div>`).join('');}
 function setSV(v){srV=v;buildSrVC();}
 function srCatCh(){const c=document.getElementById('srCat').value;document.getElementById('srAF').style.display=c==='airing'?'':'none';document.getElementById('srUF').style.display=c==='upcoming'?'':'none';}
-function openAddSr(){sid=null;srV=D.contexts[0]||'Solo';['srN','srSe','srPl','srNo','srND','srPD','srTE','srFD','srAD'].filter(id=>document.getElementById(id)).forEach(id=>document.getElementById(id).value='');if(document.getElementById('srGenF'))document.getElementById('srGenF').style.display='block';document.getElementById('srEpDisplay').textContent='1';document.getElementById('srEpTotal').textContent=' / —';document.getElementById('srCat').value='backlog';document.getElementById('srStitle').textContent='New Series';buildSrVC();srCatCh();document.getElementById('srDelBtn').style.display='none';document.getElementById('srOvl').classList.add('open');}
+function openAddSr(){sid=null;srV=D.contexts[0]||'Solo';['srN','srSe','srPl','srNo','srND','srPD','srTE','srFD','srAD'].filter(id=>document.getElementById(id)).forEach(id=>document.getElementById(id).value='');if(document.getElementById('srGenF'))document.getElementById('srGenF').style.display='block';document.getElementById('srEpDisplay').textContent='1';document.getElementById('srEpTotal').textContent=' / &mdash;';document.getElementById('srCat').value='backlog';document.getElementById('srStitle').textContent='New Series';buildSrVC();srCatCh();document.getElementById('srDelBtn').style.display='none';document.getElementById('srOvl').classList.add('open');}
 function openEditSr(id){const s=D.series.find(x=>x.id===id);if(!s)return;sid=id;srV=s.viewing||D.contexts[0];document.getElementById('srN').value=s.name;document.getElementById('srSe').value=s.season||'';document.getElementById('srPl').value=s.platform||'';document.getElementById('srNo').value=s.notes||'';document.getElementById('srCat').value=s.cat;document.getElementById('srND').value=s.nextDate||'';document.getElementById('srPD').value=s.prem||'';document.getElementById('srStitle').textContent=s.name;
   const tot=s.totalEps||'';const cur=s.curEp||1;
   document.getElementById('srTE').value=tot;
   if(document.getElementById('srFD'))document.getElementById('srFD').value=s.finaleDate||'';
   if(document.getElementById('srAD'))document.getElementById('srAD').value=s.airDays||'';
   document.getElementById('srEpDisplay').textContent=cur;
-  document.getElementById('srEpTotal').textContent=tot?' / '+tot:' / —';
+  document.getElementById('srEpTotal').textContent=tot?' / '+tot:' / &mdash;';
   buildSrVC();srCatCh();document.getElementById('srDelBtn').style.display='block';if(document.getElementById('srGenF'))document.getElementById('srGenF').style.display='none';document.getElementById('srOvl').classList.add('open');}
 function closeSrS(){
   document.getElementById('srOvl').classList.remove('open');
@@ -1304,11 +1303,11 @@ function delSr(id){if(!confirm('Remove series?'))return;D.series=D.series.filter
 // status: current | backlog | completed | upcoming | tbd
 
 const MEDIA_TYPES=[
-  {k:'book',   l:'Book',    ico:'📖'},
-  {k:'game',   l:'Game',    ico:'🎮'},
-  {k:'music',  l:'Music',   ico:'🎵'},
-  {k:'youtube',l:'YouTube', ico:'▶'},
-  {k:'other',  l:'Other',   ico:'◈'},
+  {k:'book',   l:'Book',    ico:'&#128214;'},
+  {k:'game',   l:'Game',    ico:'&#127918;'},
+  {k:'music',  l:'Music',   ico:'&#127925;'},
+  {k:'youtube',l:'YouTube', ico:'&#9654;'},
+  {k:'other',  l:'Other',   ico:'&#9672;'},
 ];
 const MEDIA_STATUS=[
   {k:'current',  l:'Currently Into'},
@@ -1327,7 +1326,7 @@ function renderMedia(){
 (function(){const extra=[{"id": "megame0", "title": "Saros", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-04-30", "notes": "", "viewing": "Solo", "rating": 0}, {"id": "megame1", "title": "Wolverine", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-09-15", "notes": "", "viewing": "Solo", "rating": 0}, {"id": "megame2", "title": "GTA VI", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "2026-11-19", "notes": "", "viewing": "Solo", "rating": 0}];extra.forEach(m=>{if(!D.media.find(x=>x.id===m.id))D.media.push(m);});})();
 // Seed game entries migrated from series
 (function(){const seedMedia=[{"id": "mesr0032", "title": "Control: Resonant", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2026", "viewing": "Solo", "rating": 0}, {"id": "mesr0035", "title": "Fable", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD", "viewing": "Solo", "rating": 0}, {"id": "mesr0037", "title": "Intergalactic: The Heretic Prophet", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2027", "viewing": "Solo", "rating": 0}, {"id": "mesr0033", "title": "Star Wars: Galactic Racer", "creator": "", "type": "game", "status": "upcoming", "releaseDate": "", "notes": "TBD 2026", "viewing": "Solo", "rating": 0}];seedMedia.forEach(m=>{if(!D.media.find(x=>x.id===m.id))D.media.push(m);});})();
-// Migrate: podcast→youtube, tbd status→backlog
+// Migrate: podcast&#8594;youtube, tbd status&#8594;backlog
 D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m.status='backlog';});
   const tS=todS();
   let h='';
@@ -1341,7 +1340,7 @@ D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m
         <span class="mv-sec-title">${sec.l}</span>
         <span style="display:flex;gap:8px;align-items:center">
           <span class="mv-sec-count">${items.length}</span>
-          <span class="tl-chevron">${coll?'›':'⌄'}</span>
+          <span class="tl-chevron">${coll?'&#8250;':'&#8964;'}</span>
         </span>
       </div>`;
     if(!coll){
@@ -1359,7 +1358,7 @@ D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m
             <span>${t.ico} ${t.l}</span>
             <span style="display:flex;gap:6px;align-items:center">
               <span class="mv-sec-count" style="font-size:9px">${typed.length}</span>
-              <span class="tl-chevron">${tColl?'›':'⌄'}</span>
+              <span class="tl-chevron">${tColl?'&#8250;':'&#8964;'}</span>
             </span>
           </div>`;
           if(!tColl) typed.forEach(m=>{h+=meCard(m);});
@@ -1375,7 +1374,7 @@ D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m
 function meCard(m){
   const typeObj=MEDIA_TYPES.find(t=>t.k===m.type)||MEDIA_TYPES[4];
   const done=m.status==='completed';
-  const stars=m.rating?'★'.repeat(m.rating)+'☆'.repeat(5-m.rating):'';
+  const stars=m.rating?'&#9733;'.repeat(m.rating)+'&#9734;'.repeat(5-m.rating):'';
   // Linked timeline events
   const linked=D.events.filter(e=>e.mediaId===m.id);
   const nextEv=linked.filter(e=>!(D.checked&&D.checked[e.id])).sort((a,b)=>a.date.localeCompare(b.date))[0];
@@ -1386,7 +1385,7 @@ function meCard(m){
       <div class="me-title">${m.title}</div>
       <div class="me-meta">
         ${m.creator?`<span class="me-creator">${m.creator}</span>`:''}
-        ${m.type==='youtube'&&m.airDays&&m.airDays.length?`<span class="me-creator">${m.airDays.join(' · ')}</span>`:''}
+        ${m.type==='youtube'&&m.airDays&&m.airDays.length?`<span class="me-creator">${m.airDays.join(' &middot; ')}</span>`:''}
         ${nextEv?`<span class="mv-date">next ${fmtS(nextEv.date)}</span>`:(m.releaseDate?`<span class="mv-date">${fmtS(m.releaseDate)}</span>`:(m.status==='upcoming'?`<span class="mv-date" style="color:var(--t4)">TBD</span>`:''))}
         ${m.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${m.viewing}</span>`:''}
         ${stars?`<span class="me-stars">${stars}</span>`:''}
@@ -1397,7 +1396,7 @@ function meCard(m){
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
       ${!done?addTLBtn:''}
-      <span class="iab" style="color:var(--t4);font-size:12px">›</span>
+      <span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span>
     </div>
   </div>`;
 }
@@ -1468,7 +1467,7 @@ function openSessionPrompt(evId){
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button onclick="document.getElementById('sessionModal').remove()" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:13px;cursor:pointer">Skip</button>
         <button onclick="completeSession('${evId}',false)" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--b2);background:var(--s3);color:var(--t1);font-size:13px;cursor:pointer;font-weight:500">Log</button>
-        <button onclick="completeSession('${evId}',true)" style="width:100%;margin-top:4px;padding:11px;border-radius:10px;border:1px solid rgba(126,201,160,.4);background:rgba(126,201,160,.08);color:var(--c-trip);font-size:13px;cursor:pointer;font-weight:600">Finished — mark complete</button>
+        <button onclick="completeSession('${evId}',true)" style="width:100%;margin-top:4px;padding:11px;border-radius:10px;border:1px solid rgba(126,201,160,.4);background:rgba(126,201,160,.08);color:var(--c-trip);font-size:13px;cursor:pointer;font-weight:600">Finished &mdash; mark complete</button>
       </div>
     </div>`;
   modal.addEventListener('click',()=>modal.remove());
@@ -1510,7 +1509,7 @@ function completeSession(evId, markComplete){
   const modal=document.getElementById('sessionModal');
   if(modal)modal.remove();
   save();renderTL();renderMedia();
-  if(markComplete) toast(e.title+' — complete!');
+  if(markComplete) toast(e.title+' &mdash; complete!');
 }
 
 // MEDIA SHEET
@@ -1576,7 +1575,7 @@ function buildMeVC(){
 function setMeV(v){meV=v;buildMeVC();}
 function buildMeStars(){
   document.getElementById('meStars').innerHTML=[1,2,3,4,5].map(n=>
-    `<span class="me-star${n<=meRating?' on':''}" onclick="setMeRating(${n})">${n<=meRating?'★':'☆'}</span>`
+    `<span class="me-star${n<=meRating?' on':''}" onclick="setMeRating(${n})">${n<=meRating?'&#9733;':'&#9734;'}</span>`
   ).join('');
 }
 function setMeRating(n){meRating=n===meRating?0:n;buildMeStars();}
@@ -1817,11 +1816,11 @@ function promptComplete(sr){
       <div style="font-family:var(--mono);font-size:12px;color:var(--t3);margin-bottom:20px">Season ${sr.season||'?'} complete</div>
       <button onclick="completeSeason('${sr.id}')" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--b2);background:var(--s3);color:var(--t1);font-size:14px;cursor:pointer;margin-bottom:10px;text-align:left">
         <div style="font-weight:600">Complete Season</div>
-        <div style="font-size:11px;color:var(--t3);margin-top:2px">Move to backlog — there are more seasons</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Move to backlog &mdash; there are more seasons</div>
       </button>
       <button onclick="completeSeries('${sr.id}')" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--b2);background:var(--s3);color:var(--t1);font-size:14px;cursor:pointer;margin-bottom:16px;text-align:left">
         <div style="font-weight:600">Complete Series</div>
-        <div style="font-size:11px;color:var(--t3);margin-top:2px">Remove — no more seasons</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Remove &mdash; no more seasons</div>
       </button>
       <button onclick="document.getElementById('completeModal').remove()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:13px;cursor:pointer">Not yet</button>
     </div>`;
@@ -1845,7 +1844,7 @@ function completeSeries(id){
   const sr=D.series.find(s=>s.id===id);
   const name=sr?sr.name:'';
   D.series=D.series.filter(s=>s.id!==id);
-  save();renderSeries();toast(name+' — finished! 🎉');
+  save();renderSeries();toast(name+' &mdash; finished! &#127881;');
 }
 function toggleCheck(id){
   if(!D.checked)D.checked={};
@@ -1900,7 +1899,7 @@ function stepEp(dir){
   cur=Math.max(1,cur+dir);
   if(tot>0) cur=Math.min(cur,tot);
   dispEl.textContent=cur;
-  totDisplay.textContent=tot?' / '+tot:' / —';
+  totDisplay.textContent=tot?' / '+tot:' / &mdash;';
   // highlight if on final ep
   dispEl.style.color=tot&&cur>=tot?'var(--c-trip)':'var(--t1)';
 }
@@ -1914,7 +1913,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(te) te.addEventListener('input',()=>{
     const tot=parseInt(te.value)||0;
     const cur=parseInt(document.getElementById('srEpDisplay').textContent)||1;
-    document.getElementById('srEpTotal').textContent=tot?' / '+tot:' / —';
+    document.getElementById('srEpTotal').textContent=tot?' / '+tot:' / &mdash;';
     if(tot&&cur>tot){document.getElementById('srEpDisplay').textContent=tot;}
     document.getElementById('srEpDisplay').style.color=tot&&cur>=tot?'var(--c-trip)':'var(--t1)';
   });
