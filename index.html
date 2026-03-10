@@ -19,30 +19,21 @@
   --c-event:#d4b87e;--c-release:#d49a7e;--c-plan:#d47e7e;--c-money:#a3c97e;
   --c-book:#c49a6c;--c-game:#8fb4e8;--c-music:#d4849e;--c-youtube:#e05e5e;--c-other:#8a8a96;
   --font:-apple-system,'SF Pro Display','SF Pro Text',system-ui,sans-serif;--mono:ui-monospace,'SF Mono',Menlo,monospace;--serif:'New York','Iowan Old Style',Georgia,serif;
-  --tabh:72px;--safeb:env(safe-area-inset-bottom,0px);
+  --tabh:56px;--safeb:env(safe-area-inset-bottom,0px);--safet:env(safe-area-inset-top,44px);
 }
-html,body{height:100%;overflow:hidden;}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);}
 body{
   font-family:var(--font);background:var(--bg);color:var(--t1);
   font-size:14px;-webkit-font-smoothing:antialiased;
-  display:flex;align-items:center;justify-content:center;
 }
-.phone{
-  width:390px;height:844px;
-  max-width:100vw;max-height:100dvh;
-  background:var(--bg);position:relative;
-  border-radius:44px;
-  box-shadow:0 0 0 1px #1a1a20,0 32px 100px rgba(0,0,0,0.88),inset 0 0 0 1px #2a2a32;
-}
+.phone{width:100%;height:100dvh;min-height:100dvh;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;}
 @media(max-width:430px){
   body{display:block;background:var(--bg);}
   .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none;}
 }
 
 /* ── APP SHELL ── */
-.app{display:flex;flex-direction:column;height:100%;overflow:hidden;border-radius:44px;}
-.statusbar{height:50px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px 0;flex-shrink:0;}
-.st-time{font-family:var(–mono);font-size:13px;font-weight:500;color:var(–t1);}
+.app{display:flex;flex-direction:column;height:100%;overflow:hidden;}
 
 .screens{flex:1;position:relative;overflow:hidden;}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .17s ease,transform .17s ease;overflow:hidden;}
@@ -60,7 +51,7 @@ body{
 .scroll::-webkit-scrollbar{display:none;}
 
 /* ── TAB BAR ── */
-.tabbar{height:var(–tabh);padding-bottom:var(–safeb);background:var(–s1);border-top:1px solid var(–b1);display:flex;align-items:flex-start;padding-top:10px;flex-shrink:0;}
+.tabbar{height:var(–tabh);background:var(–s1);border-bottom:1px solid var(–b1);display:flex;align-items:center;padding-top:env(safe-area-inset-top,0px);flex-shrink:0;}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:3px 0;border:none;background:none;}
 .tabico{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:15px;transition:all .14s;}
 .tab.on .tabico{background:var(–dim);}
@@ -115,7 +106,7 @@ CALENDAR
 .aitem.overdue::before{opacity:.6;}
 .ep-check{width:22px;height:22px;border-radius:50%;border:2px solid var(–b2);background:transparent;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;position:relative;z-index:2;}
 .ep-check.checked{background:var(–c-tv);border-color:var(–c-tv);}
-.ep-check.checked::after{content:’✓’;font-size:11px;color:#fff;font-weight:700;}
+.ep-check.checked::after{content:’\2713’;font-size:11px;color:#fff;font-weight:700;}
 .ep-check.movie-chk{border-color:var(–c-movie);}
 .ep-check.movie-chk.checked{background:var(–c-movie);border-color:var(–c-movie);}
 .ep-check.event-chk{border-color:var(–b2);}
@@ -355,9 +346,22 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
 <div class="phone">
 <div class="app">
 
-  <div class="statusbar">
-    <span class="st-time" id="stTime"></span>
-
+  <div class="tabbar">
+    <button class="tab on" data-s="timeline" onclick="goTab('timeline')">
+      <div class="tabico">&#8801;</div><span class="tablbl" id="tlTabLbl">Timeline</span>
+    </button>
+    <button class="tab" data-s="movies" onclick="goTab('movies')">
+      <div class="tabico">&#9673;</div><span class="tablbl">Movies</span>
+    </button>
+    <button class="tab" data-s="series" onclick="goTab('series')">
+      <div class="tabico">&#9654;</div><span class="tablbl">Series</span>
+    </button>
+    <button class="tab" data-s="media" onclick="goTab('media')">
+      <div class="tabico">&#9672;</div><span class="tablbl">Media</span>
+    </button>
+    <button class="tab" data-s="settings" onclick="goTab('settings')">
+      <div class="tabico">&#9881;</div><span class="tablbl">Settings</span>
+    </button>
   </div>
 
   <div class="screens">
@@ -409,25 +413,7 @@ input[type=“date”]::-webkit-calendar-picker-indicator{filter:invert(.4);curs
 
 <button class="fab" id="fab" onclick="openAddEv()">+</button>
 
-  <div class="tabbar">
-    <button class="tab on" data-s="timeline" onclick="goTab('timeline')">
-      <div class="tabico">&#8801;</div><span class="tablbl" id="tlTabLbl">Timeline</span>
-    </button>
-    <button class="tab" data-s="movies" onclick="goTab('movies')">
-      <div class="tabico">&#9673;</div><span class="tablbl">Movies</span>
-    </button>
-    <button class="tab" data-s="series" onclick="goTab('series')">
-      <div class="tabico">&#9654;</div><span class="tablbl">Series</span>
-    </button>
-    <button class="tab" data-s="media" onclick="goTab('media')">
-      <div class="tabico">&#9672;</div><span class="tablbl">Media</span>
-    </button>
-    <button class="tab" data-s="settings" onclick="goTab('settings')">
-      <div class="tabico">&#9881;</div><span class="tablbl">Settings</span>
-    </button>
-  </div>
-
-</div><!-- /app -->
+  </div><!-- /app -->
 
 <!-- EVENT SHEET -->
 
@@ -660,9 +646,7 @@ function fmtS(s){const d=parse(s);if(!d)return '';return `${DAYS[d.getDay()]} ${
 function fmtL(s){const d=parse(s);if(!d)return '';const dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];return `${dn}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;}
 function todS(){return ymd(TODAY);}
 
-// CLOCK
-function tick(){document.getElementById('stTime').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});}
-setInterval(tick,1000);tick();
+
 
 // TABS
 function goTab(t){
