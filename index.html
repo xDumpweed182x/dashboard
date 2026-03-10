@@ -35,7 +35,7 @@ body{
 /* ── APP SHELL ── */
 .app{display:flex;flex-direction:column;height:100%;overflow:hidden;}
 
-.screens{flex:1;position:relative;overflow:hidden;}
+.screens{flex:1;position:relative;overflow:hidden;border-top:1px solid var(–b1);}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .17s ease,transform .17s ease;overflow:hidden;}
 .screen.on{opacity:1;pointer-events:all;transform:translateY(0);}
 
@@ -59,7 +59,7 @@ body{
 .tab.on .tablbl{color:var(–t1);}
 
 /* ── FAB ── */
-.fab{position:absolute;right:18px;bottom:calc(var(–tabh) + 12px + var(–safeb));width:50px;height:50px;border-radius:50%;background:var(–t1);border:none;color:var(–bg);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:transform .12s;z-index:10;}
+.fab{position:fixed;right:18px;bottom:calc(env(safe-area-inset-bottom,16px) + 18px);width:50px;height:50px;border-radius:50%;background:var(–t1);border:none;color:var(–bg);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:transform .12s;z-index:10;}
 .fab:active{transform:scale(.93);}
 
 /*
@@ -311,9 +311,9 @@ SETTINGS
 /*
 SHEET
 */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:none;align-items:flex-end;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:none;align-items:flex-end;}
 .overlay.open{display:flex;}
-.sheet{width:100%;background:var(–s2);border-top:1px solid var(–b2);border-radius:20px 20px 0 0;padding:0 0 calc(24px + var(–safeb));max-height:91%;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:10000;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
+.sheet{width:100%;background:var(–s2);border-top:1px solid var(–b2);border-radius:20px 20px 0 0;padding:0 0 calc(env(safe-area-inset-bottom,24px) + 24px);max-height:91dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:10000;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
 .overlay.open .sheet{transform:translateY(0);}
 .sheet-handle{width:36px;height:4px;border-radius:2px;background:var(–b3);margin:11px auto 3px;}
 .sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 20px 14px;}
@@ -329,7 +329,7 @@ select.fi{cursor:pointer;}
 .chips{display:flex;gap:5px;flex-wrap:wrap;}
 .chip{font-family:var(–mono);font-size:11px;padding:7px 13px;border-radius:20px;border:1px solid var(–b2);color:var(–t3);cursor:pointer;transition:all .12s;background:transparent;}
 .chip.on{border-color:var(–b3);color:var(–t1);background:var(–dim);}
-.sfoot{display:flex;gap:10px;padding:18px 20px 0;}
+.sfoot{display:flex;gap:10px;padding:18px 20px 16px;position:sticky;bottom:0;background:var(–s2);border-top:1px solid var(–b1);margin-top:8px;}
 .sfbtn{flex:1;padding:13px;border-radius:12px;font-family:var(–mono);font-size:12px;letter-spacing:.04em;border:1px solid var(–b2);background:transparent;color:var(–t2);cursor:pointer;}
 .sfbtn.p{background:var(–t1);border-color:var(–t1);color:var(–bg);font-weight:600;}
 .sfbtn:active{opacity:.8;}
@@ -740,7 +740,7 @@ function renderAgenda(){
     const chkCls=e.type==='movie'?'movie-chk':e.type==='tv'?'':'event-chk';
     const chk=isEp?`<div class="ep-check ${chkCls}${ck?' checked':''}" onclick="event.stopPropagation();toggleCheck('${e.id}')"></div>`:'<div style="width:22px;flex-shrink:0"></div>';
     const overdueTag=e._overdue?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-plan);letter-spacing:.04em;text-transform:uppercase">from ${fmtS(e.date)}</span>`:'';
-    return `<div class="aitem ${e.type}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="openEditEv('${e.id}')" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${e.type}">${e.type}</span>${overdueTag}${e.endDate&&e.endDate!==e.date?`<span class="ai-until">until ${fmtS(e.endDate)}</span>`:''}</div>${e.notes?`<div class="ai-note">${e.notes}</div>`:''}</div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
+    return `<div class="aitem ${e.type}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="openEditEv('${e.id}')" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${e.type}">${e.type}</span>${overdueTag}${e.endDate&&e.endDate!==e.date?`<span class="ai-until">until ${fmtS(e.endDate)}</span>`:''}</div>${e.notes?`<div class="ai-note">${e.notes}</div>`:''}</div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">></span></div></div>`;
   }).join('');
 }
 
@@ -816,7 +816,7 @@ function renderTLItem(e){
   const watchTag=e._watchEvent?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-movie);letter-spacing:.04em">watch</span>`:'';
   const releaseTag=isMovieRelease?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-release);letter-spacing:.04em">in theaters</span>`:'';
   const onclick=e.type==='movie'?`openMvSheet('${e._watchEvent?e._releaseId:e.id}')`:`openEditEv('${e.id}')`;
-  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}${e.sessionNote?`<span style="font-family:var(--mono);font-size:10px;color:var(--c-trip)"> &#8594; ${e.sessionNote}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
+  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}${e.sessionNote?`<span style="font-family:var(--mono);font-size:10px;color:var(--c-trip)"> &#8594; ${e.sessionNote}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">></span></div></div>`;
 }
 function renderTL(){
   const tS=todS();
@@ -870,7 +870,7 @@ function renderTL(){
     const yColl=TLC.collapsed.has(yr);
     const yLabel=yr;
     h+=`<div class="tl-yr">`;
-    h+=`<div class="tl-yr-lbl" onclick="tlToggle('${yr}')">${yLabel}<span class="tl-chevron">${yColl?'&#8250;':'&#8964;'}</span></div>`;
+    h+=`<div class="tl-yr-lbl" onclick="tlToggle('${yr}')">${yLabel}<span class="tl-chevron">${yColl?'>':'v'}</span></div>`;
     if(!yColl){
       Object.keys(tree[yr]).sort().forEach(mk=>{
         const[,mnk]=mk.split('-');
@@ -882,7 +882,7 @@ function renderTL(){
         h+=`<span>${mLabel}</span>`;
         h+=`<span style="display:flex;gap:8px;align-items:center">`;
         if(complete)h+=`<button class="tl-export-btn" onclick="event.stopPropagation();exportMonth('${yr}','${mnk}')">Export & Remove</button>`;
-        h+=`<span class="tl-chevron">${mColl?'&#8250;':'&#8964;'}</span></span>`;
+        h+=`<span class="tl-chevron">${mColl?'>':'v'}</span></span>`;
         h+=`</div>`;
         if(!mColl){
           Object.keys(tree[yr][mk]).sort().forEach(day=>{
@@ -895,7 +895,7 @@ function renderTL(){
             h+=`<div class="tl-day-lbl${isT?' today':''}" onclick="tlToggle('${day}')">`;
             h+=`<span>${isT?'Today &middot; ':''}${DAYS[p.getDay()].toUpperCase()} ${p.getDate()}`;
             if(allDone)h+=` <span style="color:var(--c-trip);font-size:9px">&#10003;</span>`;
-            h+=`</span><span class="tl-chevron">${dColl?'&#8250;':'&#8964;'}</span>`;
+            h+=`</span><span class="tl-chevron">${dColl?'>':'v'}</span>`;
             h+=`</div>`;
             if(!dColl){
               const sorted=[...items.filter(e=>!(D.checked&&D.checked[e.id])),...items.filter(e=>D.checked&&D.checked[e.id])];
@@ -967,7 +967,7 @@ function renderMovies(){
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('intheaters')">
       <span class="mv-sec-title">In Theaters</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${inTheaters.length}</span><span class="tl-chevron">${itColl?'&#8250;':'&#8964;'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${inTheaters.length}</span><span class="tl-chevron">${itColl?'>':'v'}</span></span>
     </div>`;
   if(!itColl){
     if(!inTheaters.length) h+=`<div class="mv-empty">Nothing currently in theaters</div>`;
@@ -980,7 +980,7 @@ function renderMovies(){
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('upcoming')">
       <span class="mv-sec-title">Upcoming</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${upcoming.length}</span><span class="tl-chevron">${upColl?'&#8250;':'&#8964;'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${upcoming.length}</span><span class="tl-chevron">${upColl?'>':'v'}</span></span>
     </div>`;
   if(!upColl){
     if(!upcoming.length) h+=`<div class="mv-empty">No upcoming movies</div>`;
@@ -996,13 +996,13 @@ function renderMovies(){
       Object.keys(byYear).sort().forEach(yr=>{
         const yrKey='upy-'+yr;
         const yrColl=MVC.collapsed.has(yrKey);
-        h+=`<div class="mv-yr-lbl" onclick="mvToggle('${yrKey}')">${yr}<span class="tl-chevron">${yrColl?'&#8250;':'&#8964;'}</span></div>`;
+        h+=`<div class="mv-yr-lbl" onclick="mvToggle('${yrKey}')">${yr}<span class="tl-chevron">${yrColl?'>':'v'}</span></div>`;
         if(!yrColl){
           Object.keys(byYear[yr]).sort().forEach(mk=>{
             const mnk=mk.split('-')[1];
             const mKey='upm-'+mk;
             const mColl=MVC.collapsed.has(mKey);
-            h+=`<div class="mv-mo-lbl" onclick="mvToggle('${mKey}')">${MONTHS[parseInt(mnk)-1]}<span class="tl-chevron">${mColl?'&#8250;':'&#8964;'}</span></div>`;
+            h+=`<div class="mv-mo-lbl" onclick="mvToggle('${mKey}')">${MONTHS[parseInt(mnk)-1]}<span class="tl-chevron">${mColl?'>':'v'}</span></div>`;
             if(!mColl) byYear[yr][mk].forEach(e=>{h+=mvItemHTML(e,nextTwo.has(e.id));});
           });
         }
@@ -1016,7 +1016,7 @@ function renderMovies(){
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('tbd')">
       <span class="mv-sec-title">TBD</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${tbd.length}</span><span class="tl-chevron">${tbdColl?'&#8250;':'&#8964;'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${tbd.length}</span><span class="tl-chevron">${tbdColl?'>':'v'}</span></span>
     </div>`;
   if(!tbdColl){
     if(!tbd.length) h+=`<div class="mv-empty">No TBD movies</div>`;
@@ -1029,7 +1029,7 @@ function renderMovies(){
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('backlog')">
       <span class="mv-sec-title">Backlog</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${backlog.length}</span><span class="tl-chevron">${blColl?'&#8250;':'&#8964;'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${backlog.length}</span><span class="tl-chevron">${blColl?'>':'v'}</span></span>
     </div>`;
   if(!blColl){
     if(!backlog.length) h+=`<div class="mv-empty">No backlog</div>`;
@@ -1042,7 +1042,7 @@ function renderMovies(){
   h+=`<div class="mv-sec">
     <div class="mv-sec-hd" onclick="mvToggle('seen')">
       <span class="mv-sec-title">Seen</span>
-      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${seen.length}</span><span class="tl-chevron">${seenColl?'&#8250;':'&#8964;'}</span></span>
+      <span style="display:flex;gap:8px;align-items:center"><span class="mv-sec-count">${seen.length}</span><span class="tl-chevron">${seenColl?'>':'v'}</span></span>
     </div>`;
   if(!seenColl){
     if(!seen.length) h+=`<div class="mv-empty">Nothing seen yet</div>`;
@@ -1170,7 +1170,7 @@ function srCard(s){
   if(s.notes)tags+=`<span class="stag" style="font-style:italic;color:var(--t4)">${s.notes}</span>`;
   const cls='srcard'+(s.behind?' behind':(s.cat==='airing'?' airing':''));
   const addTLBtn=s.cat==='active'?`<button class="addtlbtn" onclick="event.stopPropagation();openAddToTimeline('${s.id}')">+ timeline</button>`:'';
-  return `<div class="${cls}" onclick="openEditSr('${s.id}')" style="cursor:pointer"><div class="src-main"><div style="display:flex;align-items:center;gap:7px"><span class="src-name">${s.name}</span>${btag}</div><div class="src-tags">${tags}</div></div><div class="src-acts">${s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">&#10003; caught up</button>`:''}${addTLBtn}<span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span></div></div>`;
+  return `<div class="${cls}" onclick="openEditSr('${s.id}')" style="cursor:pointer"><div class="src-main"><div style="display:flex;align-items:center;gap:7px"><span class="src-name">${s.name}</span>${btag}</div><div class="src-tags">${tags}</div></div><div class="src-acts">${s.behind?`<button class="caughtbtn" onclick="event.stopPropagation();markCU('${s.id}')">&#10003; caught up</button>`:''}${addTLBtn}<span class="iab" style="color:var(--t4);font-size:12px">></span></div></div>`;
 }
 function toggleSS(hd){hd.querySelector('.sschev').classList.toggle('open');hd.nextElementSibling.classList.toggle('open');}
 function markCU(id){
@@ -1324,7 +1324,7 @@ D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m
         <span class="mv-sec-title">${sec.l}</span>
         <span style="display:flex;gap:8px;align-items:center">
           <span class="mv-sec-count">${items.length}</span>
-          <span class="tl-chevron">${coll?'&#8250;':'&#8964;'}</span>
+          <span class="tl-chevron">${coll?'>':'v'}</span>
         </span>
       </div>`;
     if(!coll){
@@ -1342,7 +1342,7 @@ D.media.forEach(m=>{if(m.type==='podcast')m.type='youtube';if(m.status==='tbd')m
             <span>${t.ico} ${t.l}</span>
             <span style="display:flex;gap:6px;align-items:center">
               <span class="mv-sec-count" style="font-size:9px">${typed.length}</span>
-              <span class="tl-chevron">${tColl?'&#8250;':'&#8964;'}</span>
+              <span class="tl-chevron">${tColl?'>':'v'}</span>
             </span>
           </div>`;
           if(!tColl) typed.forEach(m=>{h+=meCard(m);});
@@ -1380,7 +1380,7 @@ function meCard(m){
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
       ${!done?addTLBtn:''}
-      <span class="iab" style="color:var(--t4);font-size:12px">&#8250;</span>
+      <span class="iab" style="color:var(--t4);font-size:12px">></span>
     </div>
   </div>`;
 }
