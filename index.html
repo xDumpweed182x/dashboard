@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chronicle</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Barlow:wght@300;400;500&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* System font stack — works offline, renders identically on all Apple devices */
+</style>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -18,7 +18,7 @@
   --c-tv:#7eb8d4;--c-movie:#a98fd4;--c-trip:#7ec9a0;
   --c-event:#d4b87e;--c-release:#d49a7e;--c-plan:#d47e7e;--c-money:#a3c97e;
   --c-book:#c49a6c;--c-game:#8fb4e8;--c-music:#d4849e;--c-youtube:#e05e5e;--c-other:#8a8a96;
-  --font:'Barlow',sans-serif;--mono:'Azeret Mono',monospace;--serif:'Syne',sans-serif;
+  --font:-apple-system,'SF Pro Display','SF Pro Text',system-ui,sans-serif;--mono:ui-monospace,'SF Mono',Menlo,monospace;--serif:'New York','Iowan Old Style',Georgia,serif;
   --tabh:72px;--safeb:env(safe-area-inset-bottom,0px);
 }
 html,body{height:100%;overflow:hidden;}
@@ -833,7 +833,7 @@ function renderTLItem(e){
   const watchTag=e._watchEvent?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-movie);letter-spacing:.04em">watch</span>`:'';
   const releaseTag=isMovieRelease?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-release);letter-spacing:.04em">in theaters</span>`:'';
   const onclick=e.type==='movie'?`openMvSheet('${e._watchEvent?e._releaseId:e.id}')`:`openEditEv('${e.id}')`;
-  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">›</span></div></div>`;
+  return `<div class="aitem ${itemType}${ck?' checked':''}${e._overdue?' overdue':''}" onclick="${onclick}" style="cursor:pointer">${chk}<div class="ai-body"><div class="ai-title">${e.title}</div><div class="ai-row"><span class="pill ${itemType}">${pillLabel}</span>${releaseTag}${watchTag}${overdueTag}${e.format?`<span style="font-family:var(--mono);font-size:10px;color:var(--t3)">${e.format}</span>`:''}${e.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${e.viewing}</span>`:''}${e.sessionNote?`<span style="font-family:var(--mono);font-size:10px;color:var(--c-trip)"> → ${e.sessionNote}</span>`:''}</div></div><div class="ai-acts"><span class="iab" style="color:var(--t4);font-size:12px">›</span></div></div>`;
 }
 function renderTL(){
   const tS=todS();
@@ -1387,9 +1387,11 @@ function meCard(m){
       <div class="me-meta">
         ${m.creator?`<span class="me-creator">${m.creator}</span>`:''}
         ${m.type==='youtube'&&m.airDays&&m.airDays.length?`<span class="me-creator">${m.airDays.join(' · ')}</span>`:''}
-        ${nextEv?`<span class="mv-date">next ${fmtS(nextEv.date)}</span>`:(m.releaseDate?`<span class="mv-date">${fmtS(m.releaseDate)}</span>`:'')}
+        ${nextEv?`<span class="mv-date">next ${fmtS(nextEv.date)}</span>`:(m.releaseDate?`<span class="mv-date">${fmtS(m.releaseDate)}</span>`:(m.status==='upcoming'?`<span class="mv-date" style="color:var(--t4)">TBD</span>`:''))}
         ${m.viewing?`<span class="vtag" style="font-size:9px;padding:1px 5px">${m.viewing}</span>`:''}
         ${stars?`<span class="me-stars">${stars}</span>`:''}
+        ${m.type==='book'&&m.currentPage?`<span class="me-creator">p.${m.currentPage}</span>`:''}
+        ${m.type==='game'&&m.totalHours?`<span class="me-creator">${m.totalHours}h played</span>`:''}
         ${m.notes?`<span class="mv-note">${m.notes}</span>`:''}
       </div>
     </div>
@@ -1440,6 +1442,75 @@ function confirmMeAddToTL(mid){
   D.events.push(newEv);
   document.getElementById('meAddToTLModal').remove();
   save();renderTL();renderMedia();toast('Added to Timeline');
+}
+
+function openSessionPrompt(evId){
+  const e=D.events.find(x=>x.id===evId);
+  const m=e&&e.mediaId?D.media.find(x=>x.id===e.mediaId):null;
+  if(!e||!m)return;
+  const isBook=e.type==='book';
+  const existing=document.getElementById('sessionModal');
+  if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='sessionModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:400;display:flex;align-items:center;justify-content:center;padding:24px;';
+  const curInfo=isBook?(m.currentPage?`current: p.${m.currentPage}`:'not started'):(m.totalHours?`total: ${m.totalHours}h`:'not started');
+  const label=isBook?`Page reached <span style="color:var(--t4);font-size:10px">(${curInfo})</span>`:`Session length <span style="color:var(--t4);font-size:10px">(${curInfo})</span>`;
+  const placeholder=isBook?'e.g. 142':'e.g. 1h 20m';
+  modal.innerHTML=`
+    <div style="background:var(--s2);border:1px solid var(--b2);border-radius:16px;padding:24px;width:100%;max-width:340px;" onclick="event.stopPropagation()">
+      <div style="font-family:var(--serif);font-size:17px;color:var(--t1);margin-bottom:3px">${e.title}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-bottom:18px">Log session</div>
+      <div style="margin-bottom:14px">
+        <label style="font-family:var(--mono);font-size:11px;color:var(--t3);display:block;margin-bottom:6px">${label}</label>
+        <input type="text" id="sessionVal" value="" placeholder="${placeholder}" style="width:100%;background:var(--s3);border:1px solid var(--b2);border-radius:8px;color:var(--t1);font-family:var(--mono);font-size:13px;padding:10px;box-sizing:border-box;">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="document.getElementById('sessionModal').remove()" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:13px;cursor:pointer">Skip</button>
+        <button onclick="completeSession('${evId}',false)" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--b2);background:var(--s3);color:var(--t1);font-size:13px;cursor:pointer;font-weight:500">Log</button>
+        <button onclick="completeSession('${evId}',true)" style="width:100%;margin-top:4px;padding:11px;border-radius:10px;border:1px solid rgba(126,201,160,.4);background:rgba(126,201,160,.08);color:var(--c-trip);font-size:13px;cursor:pointer;font-weight:600">Finished — mark complete</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click',()=>modal.remove());
+  document.body.appendChild(modal);
+  setTimeout(()=>{const v=document.getElementById('sessionVal');if(v)v.focus();},100);
+}
+
+function completeSession(evId, markComplete){
+  const e=D.events.find(x=>x.id===evId);
+  const m=e&&e.mediaId?D.media.find(x=>x.id===e.mediaId):null;
+  if(!e)return;
+  const valEl=document.getElementById('sessionVal');
+  const val=valEl?valEl.value.trim():'';
+  const isBook=e.type==='book';
+  if(val) e.sessionNote=val;
+  if(m&&val){
+    if(isBook){
+      const pg=parseInt(val);
+      if(!isNaN(pg)) m.currentPage=pg;
+    } else {
+      let hrs=0;
+      const hm=val.match(/(\d+\.?\d*)\s*h(?:r)?(?:\s*(\d+)\s*m)?/i);
+      const mo=val.match(/^(\d+\.?\d*)\s*m$/i);
+      const plain=val.match(/^(\d+\.?\d*)$/);
+      if(hm) hrs=parseFloat(hm[1])+(hm[2]?parseInt(hm[2])/60:0);
+      else if(mo) hrs=parseInt(mo[1])/60;
+      else if(plain) hrs=parseFloat(plain[1]);
+      m.totalHours=Math.round(((m.totalHours||0)+hrs)*10)/10;
+    }
+  }
+  if(markComplete&&m){
+    m.status='completed';
+    purgeMediaFutureEvents(m.id);
+  }
+  if(!D.checked)D.checked={};
+  D.checked[evId]=true;
+  const tS=todS();
+  if(e.date<tS) e.date=tS;
+  const modal=document.getElementById('sessionModal');
+  if(modal)modal.remove();
+  save();renderTL();renderMedia();
+  if(markComplete) toast(e.title+' — complete!');
 }
 
 // MEDIA SHEET
@@ -1512,25 +1583,80 @@ function setMeRating(n){meRating=n===meRating?0:n;buildMeStars();}
 function saveMe(){
   const title=document.getElementById('meTitle').value.trim();
   if(!title){toast('Title required');return;}
+  const newStatus=document.getElementById('meStatus').value;
   const o={
     title,
     creator:document.getElementById('meCreator').value.trim(),
     type:meType,
-    status:document.getElementById('meStatus').value,
+    status:newStatus,
     releaseDate:meType==='youtube'?'':document.getElementById('meRelease').value,
     airDays:meType==='youtube'?[...meAirDays]:[],
     notes:document.getElementById('meNotes').value.trim(),
     viewing:meV,
     rating:meRating,
   };
-  if(meId){
-    Object.assign(D.media.find(x=>x.id===meId),o);
+  const isNew=!meId;
+  const existingId=meId||uid();
+  if(!isNew){
+    const existing=D.media.find(x=>x.id===meId);
+    const oldStatus=existing.status;
+    Object.assign(existing,o);
+    // If YouTube days changed or status changed, regenerate
+    if(meType==='youtube'){
+      purgeYTEvents(existingId, newStatus==='completed');
+      if(newStatus==='current') genYTEvents(existingId, title, o.airDays, o.viewing);
+    }
+    // If any media moved to completed, purge future unchecked linked events
+    if(newStatus==='completed' && oldStatus!=='completed'){
+      purgeMediaFutureEvents(existingId);
+    }
     toast('Updated');
   } else {
-    D.media.push({id:uid(),...o});
+    D.media.push({id:existingId,...o});
+    if(meType==='youtube' && newStatus==='current' && o.airDays.length){
+      genYTEvents(existingId, title, o.airDays, o.viewing);
+    }
     toast('Added');
   }
-  save();closeMeS();renderMedia();
+  save();closeMeS();renderMedia();renderTL();
+}
+
+function genYTEvents(mid, title, airDays, viewing){
+  if(!airDays||!airDays.length) return;
+  const DAY_NUM={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  const dayNums=airDays.map(d=>DAY_NUM[d]).filter(d=>d!==undefined);
+  const start=new Date(todS()+'T12:00:00');
+  const end=new Date(start.getFullYear(),11,31,12,0,0); // Dec 31 of current year
+  let cur=new Date(start);
+  let count=0;
+  while(cur<=end && count<300){
+    if(dayNums.includes(cur.getDay())){
+      D.events.push({id:uid(),title,date:ymd(cur),type:'youtube',endDate:'',notes:viewing||'',mediaId:mid});
+      count++;
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+}
+
+function purgeYTEvents(mid, allFuture){
+  // Remove all unchecked future youtube events for this media entry
+  const tS=todS();
+  D.events=D.events.filter(e=>{
+    if(e.mediaId!==mid||e.type!=='youtube') return true;
+    if(D.checked&&D.checked[e.id]) return true; // keep checked
+    if(e.date<tS) return true; // keep past (they're history)
+    return false; // remove future unchecked
+  });
+}
+
+function purgeMediaFutureEvents(mid){
+  const tS=todS();
+  D.events=D.events.filter(e=>{
+    if(e.mediaId!==mid) return true;
+    if(D.checked&&D.checked[e.id]) return true;
+    if(e.date<=tS) return true;
+    return false;
+  });
 }
 function delMeFromSheet(){
   if(!meId)return;
@@ -1726,9 +1852,13 @@ function toggleCheck(id){
   const e=D.events.find(x=>x.id===id);
   if(!e)return;
   const wasChecked=!!D.checked[id];
+  // Book/game: intercept first check to prompt for session details
+  if(!wasChecked && e.mediaId && (e.type==='book'||e.type==='game')){
+    openSessionPrompt(id);
+    return;
+  }
   D.checked[id]=!wasChecked;
   // If item was overdue (past date) and is now being checked, move it to today
-  // so it stays on the day it was completed rather than snapping back to original date
   const tS=todS();
   if(!wasChecked && e.date<tS){
     e.date=tS;
