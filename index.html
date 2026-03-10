@@ -723,8 +723,7 @@ function getOverdue(){
     if(D.checked&&D.checked[e.id]) return false; // already checked
     if(e.date>=tS) return false; // not past
     if(e.endDate&&e.endDate>=tS) return false; // still ongoing trip-style
-    // Movie release dates never roll forward &mdash; only watch events do
-    if(e.type==='movie'&&e.plannedDate&&e.plannedDate!==e.date) return false;
+    if(e.type==='movie') return false; // movie release dates never roll forward
     return true;
   });
 }
@@ -817,7 +816,8 @@ function renderTLItem(e){
   const ckId=e._watchEvent?e._releaseId:e.id;
   const chkCls=e.type==='movie'?'movie-chk':e.type==='tv'?'':'event-chk';
   const chk=isMovieRelease?'':`<div class="ep-check ${chkCls}${ck?' checked':''}" onclick="event.stopPropagation();toggleCheck('${ckId}')"></div>`;
-  const overdueTag=e._overdue?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-plan);letter-spacing:.04em"> from ${fmtS(e.date)}</span>`:'';
+  const overdueDate=e._originalDate||e.date;
+  const overdueTag=e._overdue?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-plan);letter-spacing:.04em"> from ${fmtS(overdueDate)}</span>`:'';
   const itemType=isMovieRelease?'release':e.type;
   const pillLabel=isMovieRelease?'release':e.type;
   const watchTag=e._watchEvent?`<span style="font-family:var(--mono);font-size:9px;color:var(--c-movie);letter-spacing:.04em">watch</span>`:'';
@@ -850,10 +850,11 @@ function renderTL(){
     if(!overdueIds.has(e.id)||e.date===tS) tree[y][mk][day].push(e);
   });
   // Also add virtual watch events for movies whose plannedDate is past & unchecked
+  // Only if the release date itself isn't also overdue (avoid duplicate today entries)
   D.events.forEach(e=>{
     if(e.type==='movie'&&e.plannedDate&&e.plannedDate<tS&&!(D.checked&&D.checked[e.id])&&e.plannedDate!==e.date){
-      const virt={...e,_watchEvent:true,date:tS,_releaseId:e.id,_overdue:true};
-      if(!overdueIds.has(e.id)){
+      const virt={...e,_watchEvent:true,date:tS,_originalDate:e.plannedDate,_releaseId:e.id,_overdue:true};
+      if(!overdueIds.has(e.id)&&e.date>=tS){
         const mk2=tS.slice(0,7);
         if(!tree[tS.slice(0,4)])tree[tS.slice(0,4)]={};
         if(!tree[tS.slice(0,4)][mk2])tree[tS.slice(0,4)][mk2]={};
@@ -1699,7 +1700,7 @@ function saveMv(){
     D.events.push({id:uid(),...o});
     toast('Added');
   }
-  save();closeMvS();renderMovies();
+  save();closeMvS();renderMovies();renderTL();
 }
 function delMvFromSheet(){
   if(!mvId)return;
@@ -1849,8 +1850,9 @@ function toggleCheck(id){
   }
   D.checked[id]=!wasChecked;
   // If item was overdue (past date) and is now being checked, move it to today
+  // Exception: movie events keep their release date fixed
   const tS=todS();
-  if(!wasChecked && e.date<tS){
+  if(!wasChecked && e.date<tS && e.type!=='movie'){
     e.date=tS;
   }
 
